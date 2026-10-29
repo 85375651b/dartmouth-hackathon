@@ -39,5 +39,17 @@ Start with a documentation-only task, such as clarifying a setup instruction:
 4. Request a revision or keep the edit. Commit and push only when explicitly
    requested.
 
+After an explicitly requested commit and push, verify the result:
+
+```sh
+git fetch origin
+git status --short --branch
+git rev-parse HEAD origin/main
+```
+
+For work pushed to `main`, the two commit hashes should match and the working
+tree should be clean. This checks the Git workflow; application checks will be
+added when an application stack is chosen.
+
 Before starting application work, check the event's official rules for build
 timing, pre-existing materials, and AI assistance.
