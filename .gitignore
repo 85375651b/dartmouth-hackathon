@@ -1,0 +1,38 @@
+# Environment secrets (only sanitized examples belong in Git)
+.env
+.env.*
+!.env.example
+!.env.*.example
+.envrc
+
+# Credentials and private keys
+.aws/
+.ssh/
+secrets/
+credentials/
+credentials.json
+credentials.*.json
+client_secret*.json
+service-account*.json
+service_account*.json
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+.npmrc
+.pypirc
+.netrc
+
+# Machine-local agent configuration, credentials, and session state
+.claude/*
+!.claude/settings.json
+.claude.json
+CLAUDE.local.md
+.codex/
+.mcp.json
+.mcp.local.json
+
+# Local OS files
+.DS_Store
