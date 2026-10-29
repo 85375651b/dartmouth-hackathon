@@ -1,6 +1,6 @@
 # Dartmouth hackathon
 
-Hello world
+Workspace ready for the Dartmouth hackathon.
 
 Shared repository setup for Claude Code and the official OpenAI Codex plugin.
 Application implementation has not started.
