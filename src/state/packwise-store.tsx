@@ -6,15 +6,19 @@
  */
 import { createContext, useContext, useMemo, useReducer, type ReactNode } from "react";
 import { createDemoData } from "@/lib/demo-data";
+import { applyTripSettings, type TripSettingsDraft } from "@/lib/trip-settings";
 import type { ItemId, PackWiseData, RoomZoneId, SuitcaseId } from "@/lib/types";
 
 export type PackWiseAction =
+  | { type: "saveTripSettings"; draft: TripSettingsDraft }
   | { type: "assignItemToSuitcase"; itemId: ItemId; suitcaseId: SuitcaseId }
   | { type: "assignItemToZone"; itemId: ItemId; roomZoneId: RoomZoneId }
   | { type: "resetDemo" };
 
 export function packWiseReducer(state: PackWiseData, action: PackWiseAction): PackWiseData {
   switch (action.type) {
+    case "saveTripSettings":
+      return applyTripSettings(state, action.draft);
     case "assignItemToSuitcase": {
       const { itemId, suitcaseId } = action;
       const others = state.packingPlan.assignments.filter((a) => a.itemId !== itemId);

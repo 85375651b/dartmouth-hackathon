@@ -16,6 +16,7 @@ export function TripSummary() {
 
   const stats = [
     { label: "Route", value: `${trip.origin} → ${trip.destination}` },
+    { label: "Purpose", value: trip.purpose },
     { label: "Departs", value: `${departure} · ${trip.durationDays} days` },
     { label: "Items", value: `${items.length} entries · ${totalKg} kg · ${totalLiters} L` },
   ];

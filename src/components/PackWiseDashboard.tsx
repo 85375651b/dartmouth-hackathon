@@ -4,6 +4,7 @@ import { RoomZoneCard } from "@/components/room/RoomZoneCard";
 import { SuitcaseCard } from "@/components/packing/SuitcaseCard";
 import { DemoBanner } from "@/components/shared/DemoBanner";
 import { TripSummary } from "@/components/trip/TripSummary";
+import { TripSettings } from "@/components/trip/TripSettings";
 import { roomZoneLoads, suitcaseLoads } from "@/lib/loads";
 import { usePackWise } from "@/state/packwise-store";
 
@@ -21,6 +22,7 @@ export function PackWiseDashboard() {
 
       <DemoBanner />
       <TripSummary />
+      <TripSettings />
 
       <section aria-labelledby="packed-heading">
         <h2 id="packed-heading" className="mb-3 text-xl font-semibold">

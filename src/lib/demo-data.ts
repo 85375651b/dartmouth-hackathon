@@ -302,6 +302,7 @@ export const demoTrip: Trip = {
   name: "Demo: Spring term in Barcelona",
   origin: "Hanover, NH, USA",
   destination: "Barcelona, Spain",
+  purpose: "Study abroad",
   departureDate: "2027-01-08",
   durationDays: 110,
   itemIds: demoItems.map((item) => item.id),

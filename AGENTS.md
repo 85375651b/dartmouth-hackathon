@@ -8,6 +8,17 @@ create a second project folder or scaffold an application until requested.
 - Read the existing files and Git status before editing. Preserve other people's
   changes and keep each task focused on the user's request.
 - Do not commit, push, deploy, or publish unless explicitly requested.
+- Make changes in this local checkout first. Each GitHub push requires the
+  user's explicit manual go-ahead; permission for one push does not authorize
+  later pushes. Do not change GitHub state without that authorization.
+- Before every authorized push, pull the latest changes from the target remote
+  branch, preserve teammates' work when integrating, resolve conflicts, and
+  rerun the relevant checks before pushing. Do not discard local work or force
+  push to bypass conflicts.
+- After each completed change, verify it on the local development server. Reuse
+  an existing server when available; otherwise start it using the documented
+  command and report the URL. Local development uses live reload, not a Git
+  push or public deployment.
 - The app is PackWise: Next.js (App Router), TypeScript, and Tailwind CSS in the
   repository root. Do not create another project folder. Setup, development,
   and verification commands are documented in `README.md`; run `npm run check`

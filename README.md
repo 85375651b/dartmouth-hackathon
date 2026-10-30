@@ -43,7 +43,9 @@ This runs, in order (each is also available on its own):
 | `npm run build` | Production build (`next build`) |
 
 To preview the production build locally: `npm run build && npm start`, then open
-<http://localhost:3000>. There are no unit tests or linter yet.
+<http://localhost:3000>. Run focused trip-settings tests with
+`node --experimental-strip-types --test scripts/trip-settings.test.ts`.
+There is no linter yet.
 
 ### What exists
 
@@ -68,8 +70,21 @@ To preview the production build locally: `npm run build && npm start`, then open
 - **Load and validation logic** (`src/lib/loads.ts`, `src/lib/validate.ts`):
   pure functions usable from the UI and from Node scripts.
 
+### Edit trip settings
+
+Use **Trip settings** to edit the destination, trip length in days, travel purpose,
+and each suitcase's estimated capacity, total weight limit, and empty weight.
+**Save settings** applies all valid fields together; **Cancel** discards unsaved
+edits. Limits include the empty bag. Existing inventory and assignments remain
+intact; reducing limits below a current load displays a warning without moving
+items. Volume is an estimate, not a guarantee of physical fit. Reloading or
+**Reset demo** restores the example data and clears drafts.
+
+The shared `Trip` type now includes `purpose`, prefilled as “Study abroad” in the
+demo. Suitcase loads and summaries are recalculated from the saved settings.
+
 Not included yet: login, database or persistence, 3D graphics, AI features,
-automatic packing, or editing items, suitcases, and zones in the UI.
+automatic packing, or editing inventory items and room zones in the UI.
 
 ### File layout and suggested ownership
 

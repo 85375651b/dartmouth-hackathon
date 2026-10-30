@@ -50,6 +50,7 @@ export interface Trip {
   /** Free-form origin, e.g. "Hanover, NH, USA". */
   origin: string;
   destination: string;
+  purpose: string;
   /** ISO 8601 date, e.g. "2027-01-08". */
   departureDate: string;
   durationDays: number;

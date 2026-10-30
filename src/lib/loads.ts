@@ -34,17 +34,18 @@ export function suitcaseLoads(data: PackWiseData): SuitcaseLoad[] {
       .sort((a, b) => a.packOrder - b.packOrder)
       .map((a) => items.get(a.itemId))
       .filter((item): item is Item => item !== undefined);
-    const contentsWeightKg = round1(sum(packed, (i) => i.weightKg));
-    const totalWeightKg = round1(contentsWeightKg + suitcase.emptyWeightKg);
-    const usedLiters = round1(sum(packed, (i) => i.volumeLiters));
+    const contentsWeightKg = sum(packed, (i) => i.weightKg);
+    const totalWeightKg = contentsWeightKg + suitcase.emptyWeightKg;
+    const usedLiters = sum(packed, (i) => i.volumeLiters);
     return {
       suitcase,
       items: packed,
       contentsWeightKg,
       totalWeightKg,
       usedLiters,
-      overWeight: totalWeightKg > suitcase.maxWeightKg,
-      overVolume: usedLiters > suitcase.capacityLiters,
+      // Compare unrounded totals so decimal limits cannot hide an overload.
+      overWeight: totalWeightKg > suitcase.maxWeightKg + 1e-9,
+      overVolume: usedLiters > suitcase.capacityLiters + 1e-9,
     };
   });
 }

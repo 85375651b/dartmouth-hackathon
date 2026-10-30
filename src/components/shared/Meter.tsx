@@ -21,7 +21,7 @@ export function Meter({ label, value, max, valueText }: MeterProps) {
         aria-label={label}
         aria-valuemin={0}
         aria-valuemax={max}
-        aria-valuenow={value}
+        aria-valuenow={Math.max(0, Math.min(value, max))}
         aria-valuetext={valueText}
         className="mt-1 h-2 overflow-hidden rounded-full bg-stone-200"
       >

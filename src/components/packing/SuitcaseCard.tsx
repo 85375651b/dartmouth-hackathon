@@ -39,6 +39,13 @@ export function SuitcaseCard({ load, suitcases }: SuitcaseCardProps) {
         />
       </div>
 
+      {(load.overWeight || load.overVolume) && (
+        <p role="alert" className="mt-3 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          Current assignments exceed {load.overWeight && load.overVolume ? "the weight and estimated volume limits" : load.overWeight ? "the weight limit" : "the estimated volume limit"}.
+          {" "}Items have not been moved or reoptimized. Adjust your settings or move items before traveling.
+        </p>
+      )}
+
       <ol className="mt-4 divide-y divide-stone-100 text-sm">
         {items.map((item) => (
           <li key={item.id} data-item-id={item.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
