@@ -72,16 +72,29 @@ There is no linter yet.
 
 ### Edit trip settings
 
-Use **Trip settings** to edit the destination, trip length in days, travel purpose,
-and each suitcase's estimated capacity, total weight limit, and empty weight.
-**Save settings** applies all valid fields together; **Cancel** discards unsaved
-edits. Limits include the empty bag. Existing inventory and assignments remain
-intact; reducing limits below a current load displays a warning without moving
-items. Volume is an estimate, not a guarantee of physical fit. Reloading or
-**Reset demo** restores the example data and clears drafts.
+Use **Trip settings** to edit destination, trip length, optional departure date,
+manual total suitcase weight limits, and approximate empty suitcase weights.
+**Save settings** applies valid fields together; **Cancel** discards drafts.
+Limits include the empty bag. Inventory, assignments, IDs, existing capacity,
+and the legacy purpose field are preserved; purpose and capacity are no longer
+form inputs. Lowering a weight limit can display an overload warning without
+moving items. Volume meters explicitly use existing stored/demo estimates,
+not confirmed capacities or airline allowances, and do not guarantee fit.
 
-The shared `Trip` type now includes `purpose`, prefilled as “Study abroad” in the
-demo. Suitcase loads and summaries are recalculated from the saved settings.
+**Flight and baggage details** optionally collects one segment's operating
+airline, flight number, airports, cabin, fare brand, benefits, and expected
+checked-bag count. Choose **I don't have flight details yet** to pack manually.
+Unknown values are allowed; missing information is guidance for a future lookup.
+Changing expected count does not create or remove suitcases. Connections, return
+flights, and codeshares require additional checks outside this version.
+
+`Trip.flight` is optional for compatibility and contains user-entered details,
+never confirmed baggage policy. Departure date continues to use
+`Trip.departureDate` (blank means unknown). Demo flight details are explicitly
+unknown, with one expected checked bag. No search, external requests, airline
+allowance inference, or pricing verification is implemented. Never enter booking
+references, passport details, or card numbers. Reloading or **Reset demo** restores
+all sample settings and clears drafts; there is no persistence.
 
 Not included yet: login, database or persistence, 3D graphics, AI features,
 automatic packing, or editing inventory items and room zones in the UI.

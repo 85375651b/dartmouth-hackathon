@@ -32,12 +32,14 @@ export function SuitcaseCard({ load, suitcases }: SuitcaseCardProps) {
           valueText={`${formatKg(load.totalWeightKg)} / ${formatKg(suitcase.maxWeightKg)}`}
         />
         <Meter
-          label="Volume"
+          label="Volume (stored estimate)"
           value={load.usedLiters}
           max={suitcase.capacityLiters}
           valueText={`${formatLiters(load.usedLiters)} / ${formatLiters(suitcase.capacityLiters)}`}
         />
       </div>
+
+      <p className="mt-2 text-xs text-stone-500">Volume uses existing stored/demo estimates, not a user-confirmed capacity or airline allowance. It does not guarantee physical fit.</p>
 
       {(load.overWeight || load.overVolume) && (
         <p role="alert" className="mt-3 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">

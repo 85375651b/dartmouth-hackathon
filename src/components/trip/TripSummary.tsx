@@ -8,15 +8,14 @@ export function TripSummary() {
   const { trip, items } = data;
   const totalKg = round1(items.reduce((sum, item) => sum + item.weightKg, 0));
   const totalLiters = round1(items.reduce((sum, item) => sum + item.volumeLiters, 0));
-  const departure = new Date(`${trip.departureDate}T00:00:00`).toLocaleDateString("en-US", {
+  const departure = trip.departureDate ? new Date(`${trip.departureDate}T00:00:00`).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
-  });
+  }) : "Date unknown";
 
   const stats = [
     { label: "Route", value: `${trip.origin} → ${trip.destination}` },
-    { label: "Purpose", value: trip.purpose },
     { label: "Departs", value: `${departure} · ${trip.durationDays} days` },
     { label: "Items", value: `${items.length} entries · ${totalKg} kg · ${totalLiters} L` },
   ];
@@ -34,6 +33,17 @@ export function TripSummary() {
           </div>
         ))}
       </dl>
+      <div className="mt-4 border-t border-stone-100 pt-3 text-sm text-stone-600">
+        <h3 className="font-medium">Flight and baggage details · not verified</h3>
+        {trip.flight?.detailsKnown ? <>
+          <p>{trip.flight.operatingAirline || "Airline unknown"} · {trip.flight.flightNumber || "Flight number unknown"}</p>
+          <p>{trip.flight.originAirport || "Origin airport unknown"} → {trip.flight.destinationAirport || "Destination airport unknown"}</p>
+          <p>Cabin: {trip.flight.cabinClass} · Fare: {trip.flight.fareBrand || "Unknown"}</p>
+          <p>Benefits: {trip.flight.baggageBenefits || "None specified"}</p>
+        </> : <p>Flight details not available yet. Manual packing is available.</p>}
+        <p>Expected checked bags: {trip.flight?.checkedBagCount ?? data.suitcases.filter((bag) => bag.kind === "checked").length}</p>
+        {trip.flight && trip.flight.checkedBagCount !== data.suitcases.filter((bag) => bag.kind === "checked").length && <p className="text-amber-900">Expected checked-bag count differs from the current plan. No suitcases were added or removed.</p>}
+      </div>
     </section>
   );
 }

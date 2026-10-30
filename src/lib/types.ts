@@ -44,14 +44,29 @@ export interface DimensionsCm {
 // Core entities
 // ---------------------------------------------------------------------------
 
+/** User-provided details for one segment; never verified baggage policy. */
+export interface FlightDetails {
+  detailsKnown: boolean;
+  operatingAirline: string;
+  flightNumber: string;
+  originAirport: string;
+  destinationAirport: string;
+  cabinClass: string;
+  fareBrand: string;
+  baggageBenefits: string;
+  checkedBagCount: number;
+}
+
 export interface Trip {
   id: TripId;
   name: string;
   /** Free-form origin, e.g. "Hanover, NH, USA". */
   origin: string;
   destination: string;
+  /** Legacy metadata retained for compatibility; no longer edited in T04. */
   purpose: string;
-  /** ISO 8601 date, e.g. "2027-01-08". */
+  flight?: FlightDetails;
+  /** ISO 8601 date, e.g. "2027-01-08"; blank when unknown. */
   departureDate: string;
   durationDays: number;
   itemIds: ItemId[];
@@ -98,11 +113,11 @@ export interface Suitcase {
   id: SuitcaseId;
   name: string;
   kind: SuitcaseKind;
-  /** Weight of the empty suitcase. */
+  /** User's approximate weight of the empty suitcase. */
   emptyWeightKg: Kilograms;
-  /** Airline limit for the suitcase including contents. */
+  /** Manually entered total weight limit including contents; not verified policy. */
   maxWeightKg: Kilograms;
-  /** Usable interior volume. */
+  /** Stored estimate of usable interior volume; not an airline allowance. */
   capacityLiters: Liters;
   dimensionsCm: DimensionsCm;
 }

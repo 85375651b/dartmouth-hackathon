@@ -303,6 +303,12 @@ export const demoTrip: Trip = {
   origin: "Hanover, NH, USA",
   destination: "Barcelona, Spain",
   purpose: "Study abroad",
+  // Flight details are unknown; no airline allowance or pricing is verified.
+  flight: {
+    detailsKnown: false, operatingAirline: "", flightNumber: "",
+    originAirport: "", destinationAirport: "", cabinClass: "Unknown",
+    fareBrand: "", baggageBenefits: "", checkedBagCount: 1,
+  },
   departureDate: "2027-01-08",
   durationDays: 110,
   itemIds: demoItems.map((item) => item.id),
