@@ -36,3 +36,13 @@ CLAUDE.local.md
 
 # Local OS files
 .DS_Store
+
+# Next.js / Node build output and dependencies
+node_modules/
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+npm-debug.log*
+.vercel/

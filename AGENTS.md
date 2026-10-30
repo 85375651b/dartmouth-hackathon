@@ -8,9 +8,14 @@ create a second project folder or scaffold an application until requested.
 - Read the existing files and Git status before editing. Preserve other people's
   changes and keep each task focused on the user's request.
 - Do not commit, push, deploy, or publish unless explicitly requested.
-- No application stack or build/test commands have been chosen yet. Do not invent
-  them. Once implementation is requested, document the actual commands and run
-  checks appropriate to the changes.
+- The app is PackWise: Next.js (App Router), TypeScript, and Tailwind CSS in the
+  repository root. Do not create another project folder. Setup, development,
+  and verification commands are documented in `README.md`; run `npm run check`
+  before handing off changes.
+- Shared types live in `src/lib/types.ts`. Use kilograms, liters, and
+  centimeters, and connect entities only by their stable string IDs.
+- State lives in browser memory (`src/state/packwise-store.tsx`). Do not add
+  login, a database, 3D graphics, or AI integration unless requested.
 - Report what changed, how it was verified, and any remaining limitations.
 
 ## Claude Code and Codex
@@ -35,3 +40,13 @@ create a second project folder or scaffold an application until requested.
   contain placeholders only. Keep `.env.example` safe to share.
 - Git exclusions prevent accidental tracking; they are not an access-control
   boundary. Check staged files for secrets before any future commit.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
