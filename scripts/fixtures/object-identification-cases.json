@@ -1,0 +1,39 @@
+[
+  {
+    "case": "a",
+    "description": "7 shirts, a visibly identifiable thin/light ultrabook, a visibly identifiable gaming laptop, and a closed pouch whose material cannot be determined. No contents are inferred.",
+    "raw_ai_output": [
+      { "label": "shirt", "count": 7, "attributes": {}, "flags": [] },
+      { "label": "laptop", "count": 1, "attributes": { "type": "ultrabook_thin_light" }, "flags": [] },
+      { "label": "laptop", "count": 1, "attributes": { "type": "gaming_or_workstation" }, "flags": [] },
+      { "label": "pouch", "count": 1, "attributes": { "material": null }, "flags": ["attribute_uncertain"] }
+    ],
+    "expected": [
+      { "label": "shirt", "count": 8, "attributes": {}, "flags": [], "placement_tag": "no-matching-rule" },
+      { "label": "laptop", "count": 1, "attributes": { "type": "ultrabook_thin_light" }, "flags": [], "placement_tag": "no-matching-rule" },
+      { "label": "laptop", "count": 1, "attributes": { "type": "gaming_or_workstation" }, "flags": [], "placement_tag": "no-matching-rule" },
+      { "label": "pouch", "count": 1, "attributes": { "material": null }, "flags": ["attribute_uncertain", "assumed_empty"], "placement_tag": "no-matching-rule" }
+    ]
+  },
+  {
+    "case": "b",
+    "description": "5 power banks; no capacity attributes or measurements.",
+    "raw_ai_output": [
+      { "label": "power bank", "count": 5, "attributes": {}, "flags": [] }
+    ],
+    "expected": [
+      { "label": "power bank", "count": 6, "attributes": {}, "flags": [], "placement_tag": "carry-on-only" }
+    ]
+  },
+  {
+    "case": "c",
+    "description": "A steel mug next to a visibly metal mug for which steel versus aluminum cannot be determined. The requested metal fallback makes both material=steel; identical groups merge.",
+    "raw_ai_output": [
+      { "label": "mug", "count": 1, "attributes": { "material": "steel" }, "flags": [] },
+      { "label": "mug", "count": 1, "attributes": { "material": "steel" }, "flags": [] }
+    ],
+    "expected": [
+      { "label": "mug", "count": 2, "attributes": { "material": "steel" }, "flags": [], "placement_tag": "no-matching-rule" }
+    ]
+  }
+]

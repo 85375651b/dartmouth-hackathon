@@ -46,3 +46,7 @@ next-env.d.ts
 *.tsbuildinfo
 npm-debug.log*
 .vercel/
+
+.env
+.env.*
+!.env.example

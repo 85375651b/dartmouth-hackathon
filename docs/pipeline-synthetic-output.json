@@ -1,0 +1,763 @@
+{
+  "fixture": "SYNTHETIC: stub identification; real detector, tagging, bundles, compression arithmetic, optimizer, and layer solver",
+  "status": "proposal",
+  "items": [
+    {
+      "id": "item-photo-759503c1eeb11bc4",
+      "label": "shirt",
+      "counts": {
+        "ai_count": 7,
+        "after_margin": 8,
+        "final_count": 8
+      },
+      "flags": [],
+      "placement_tag": "no-matching-rule",
+      "category": 2,
+      "weightKg": 1.6,
+      "volume": {
+        "uncompressedLiters": 2.3597372160000005,
+        "packedLiters": 2.3597372160000005,
+        "source": "bounding_boxes",
+        "warnings": []
+      },
+      "pixelInstances": 7
+    },
+    {
+      "id": "item-photo-6dc840aad4369991",
+      "label": "shoes",
+      "counts": {
+        "ai_count": 3,
+        "after_margin": 3,
+        "final_count": 3
+      },
+      "flags": [
+        "unpaired_shoe"
+      ],
+      "placement_tag": "no-matching-rule",
+      "category": 1,
+      "weightKg": 1.2000000000000002,
+      "volume": {
+        "uncompressedLiters": 2.6547043679999995,
+        "packedLiters": 2.6547043679999995,
+        "source": "bounding_boxes",
+        "warnings": []
+      },
+      "pixelInstances": 3
+    },
+    {
+      "id": "item-photo-e0e1c89a13e057c0",
+      "label": "shampoo",
+      "counts": {
+        "ai_count": 1,
+        "after_margin": 1,
+        "final_count": 1
+      },
+      "flags": [
+        "assumed_full"
+      ],
+      "placement_tag": "no-matching-rule",
+      "category": 1,
+      "weightKg": 0.08,
+      "volume": {
+        "uncompressedLiters": 0.5899343039999995,
+        "packedLiters": 0.5899343039999995,
+        "source": "bounding_boxes",
+        "warnings": []
+      },
+      "pixelInstances": 1
+    },
+    {
+      "id": "item-photo-d71eda363b7e9a2b",
+      "label": "lotion",
+      "counts": {
+        "ai_count": 1,
+        "after_margin": 1,
+        "final_count": 1
+      },
+      "flags": [
+        "assumed_full"
+      ],
+      "placement_tag": "checked-only",
+      "category": 1,
+      "weightKg": 0.3,
+      "volume": {
+        "uncompressedLiters": 0.5899343040000001,
+        "packedLiters": 0.5899343040000001,
+        "source": "bounding_boxes",
+        "warnings": []
+      },
+      "pixelInstances": 1
+    },
+    {
+      "id": "item-photo-2605f320754e91a5",
+      "label": "power bank",
+      "counts": {
+        "ai_count": 1,
+        "after_margin": 1,
+        "final_count": 1
+      },
+      "flags": [],
+      "placement_tag": "carry-on-only",
+      "category": 1,
+      "weightKg": 0.25,
+      "volume": {
+        "uncompressedLiters": 0.14748357600000025,
+        "packedLiters": 0.14748357600000025,
+        "source": "bounding_boxes",
+        "warnings": []
+      },
+      "pixelInstances": 1
+    },
+    {
+      "id": "item-photo-fbc15a9a09d76118",
+      "label": "jacket",
+      "counts": {
+        "ai_count": 1,
+        "after_margin": 1,
+        "final_count": 1
+      },
+      "flags": [],
+      "placement_tag": "no-matching-rule",
+      "category": 3,
+      "weightKg": 0.6,
+      "volume": {
+        "uncompressedLiters": 1.1798686080000007,
+        "packedLiters": 0.5899343040000004,
+        "source": "compression",
+        "reference_id": "compression-synthetic-down",
+        "warnings": [
+          "Material-matched sleeping-bag estimate; compression pressure, construction and fill quality may differ. Fit is not guaranteed.",
+          "Transferring a sleeping-bag ratio to a jacket or pillow has not been calibrated against measurements."
+        ]
+      },
+      "pixelInstances": 1
+    },
+    {
+      "id": "item-photo-56a2fb02aaece38f",
+      "label": "surfboard",
+      "counts": {
+        "ai_count": 1,
+        "after_margin": 1,
+        "final_count": 1
+      },
+      "flags": [],
+      "placement_tag": "no-matching-rule",
+      "category": 1,
+      "weightKg": 5,
+      "volume": {
+        "uncompressedLiters": 163.87064,
+        "packedLiters": 163.87064,
+        "source": "bounding_boxes",
+        "warnings": []
+      },
+      "pixelInstances": 1
+    }
+  ],
+  "bundles": [
+    {
+      "bundle_id": "shoe_pair:item-photo-6dc840aad4369991:1",
+      "kind": "shoe_pair",
+      "members": [
+        {
+          "item_id": "item-photo-6dc840aad4369991",
+          "qty": 2
+        }
+      ],
+      "placement_tag": "either",
+      "flags": []
+    },
+    {
+      "bundle_id": "liquids_cabin",
+      "kind": "liquids",
+      "members": [
+        {
+          "item_id": "item-photo-e0e1c89a13e057c0",
+          "qty": 1
+        }
+      ],
+      "placement_tag": "either",
+      "flags": [
+        "assumed_full"
+      ]
+    },
+    {
+      "bundle_id": "liquids_checked",
+      "kind": "liquids",
+      "members": [
+        {
+          "item_id": "item-photo-d71eda363b7e9a2b",
+          "qty": 1
+        }
+      ],
+      "placement_tag": "checked_only",
+      "flags": [
+        "assumed_full"
+      ]
+    }
+  ],
+  "packingUnits": [
+    {
+      "id": "shoe_pair:item-photo-6dc840aad4369991:1",
+      "bundle_id": "shoe_pair:item-photo-6dc840aad4369991:1",
+      "instance_ids": [
+        "item-photo-6dc840aad4369991:instance:1",
+        "item-photo-6dc840aad4369991:instance:2"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 7.999999999999997,
+        "heightIn": 3
+      },
+      "packedVolumeLiters": 1.7698029120000005,
+      "geometry_source": "shoe_pair_width",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 1,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "must_have"
+    },
+    {
+      "id": "liquids_cabin",
+      "bundle_id": "liquids_cabin",
+      "instance_ids": [
+        "item-photo-e0e1c89a13e057c0:instance:1"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.499999999999997,
+        "widthIn": 3.9999999999999987,
+        "heightIn": 2
+      },
+      "packedVolumeLiters": 0.6784244495999994,
+      "geometry_source": "liquid_search",
+      "flexible": true,
+      "uprightOnly": false,
+      "liquidPacking": {
+        "volume_cm3": 678.4244495999993,
+        "bbox_cm": [
+          11.429999999999993,
+          10.159999999999997,
+          5.08
+        ],
+        "lower_bound_cm3": 589.9343039999994,
+        "flexible": true,
+        "feasible": true,
+        "arrangement": [
+          {
+            "item_id": "item-photo-e0e1c89a13e057c0:instance:1",
+            "instance_index": 0,
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              11.429999999999993,
+              10.159999999999997,
+              5.08
+            ],
+            "orientation": [
+              0,
+              1,
+              2
+            ]
+          }
+        ],
+        "warnings": []
+      },
+      "category": 1,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "must_have"
+    },
+    {
+      "id": "liquids_checked",
+      "bundle_id": "liquids_checked",
+      "instance_ids": [
+        "item-photo-d71eda363b7e9a2b:instance:1"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 3.9999999999999987,
+        "heightIn": 2
+      },
+      "packedVolumeLiters": 0.6784244496000001,
+      "geometry_source": "liquid_search",
+      "flexible": true,
+      "uprightOnly": false,
+      "liquidPacking": {
+        "volume_cm3": 678.4244496000001,
+        "bbox_cm": [
+          11.430000000000007,
+          10.159999999999997,
+          5.08
+        ],
+        "lower_bound_cm3": 589.9343040000001,
+        "flexible": true,
+        "feasible": true,
+        "arrangement": [
+          {
+            "item_id": "item-photo-d71eda363b7e9a2b:instance:1",
+            "instance_index": 0,
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              11.430000000000007,
+              10.159999999999997,
+              5.08
+            ],
+            "orientation": [
+              0,
+              1,
+              2
+            ]
+          }
+        ],
+        "warnings": []
+      },
+      "category": 1,
+      "allowedBagIds": [
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "must_have"
+    },
+    {
+      "id": "item-photo-759503c1eeb11bc4:instance:1",
+      "instance_ids": [
+        "item-photo-759503c1eeb11bc4:instance:1"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 4,
+        "heightIn": 1
+      },
+      "packedVolumeLiters": 0.2949671520000002,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 2,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    },
+    {
+      "id": "item-photo-759503c1eeb11bc4:instance:2",
+      "instance_ids": [
+        "item-photo-759503c1eeb11bc4:instance:2"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.499999999999997,
+        "widthIn": 4,
+        "heightIn": 1
+      },
+      "packedVolumeLiters": 0.29496715199999984,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 2,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    },
+    {
+      "id": "item-photo-759503c1eeb11bc4:instance:3",
+      "instance_ids": [
+        "item-photo-759503c1eeb11bc4:instance:3"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 4,
+        "heightIn": 1
+      },
+      "packedVolumeLiters": 0.2949671520000002,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 2,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    },
+    {
+      "id": "item-photo-759503c1eeb11bc4:instance:4",
+      "instance_ids": [
+        "item-photo-759503c1eeb11bc4:instance:4"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 3.9999999999999987,
+        "heightIn": 1
+      },
+      "packedVolumeLiters": 0.29496715200000007,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 2,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    },
+    {
+      "id": "item-photo-759503c1eeb11bc4:instance:5",
+      "instance_ids": [
+        "item-photo-759503c1eeb11bc4:instance:5"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.499999999999997,
+        "widthIn": 3.9999999999999987,
+        "heightIn": 1
+      },
+      "packedVolumeLiters": 0.29496715199999973,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 2,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    },
+    {
+      "id": "item-photo-759503c1eeb11bc4:instance:6",
+      "instance_ids": [
+        "item-photo-759503c1eeb11bc4:instance:6"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 3.9999999999999987,
+        "heightIn": 1
+      },
+      "packedVolumeLiters": 0.29496715200000007,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 2,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    },
+    {
+      "id": "item-photo-759503c1eeb11bc4:instance:7",
+      "instance_ids": [
+        "item-photo-759503c1eeb11bc4:instance:7"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 3.9999999999999987,
+        "heightIn": 1
+      },
+      "packedVolumeLiters": 0.29496715200000007,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 2,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    },
+    {
+      "id": "item-photo-759503c1eeb11bc4:instance:8",
+      "instance_ids": [
+        "item-photo-759503c1eeb11bc4:instance:8"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 4,
+        "heightIn": 1
+      },
+      "packedVolumeLiters": 0.2949671520000002,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 2,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    },
+    {
+      "id": "item-photo-6dc840aad4369991:instance:3",
+      "instance_ids": [
+        "item-photo-6dc840aad4369991:instance:3"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 3.9999999999999987,
+        "heightIn": 3
+      },
+      "packedVolumeLiters": 0.8849014560000001,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 1,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "must_have"
+    },
+    {
+      "id": "item-photo-2605f320754e91a5:instance:1",
+      "instance_ids": [
+        "item-photo-2605f320754e91a5:instance:1"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.500000000000003,
+        "widthIn": 4.000000000000004,
+        "heightIn": 0.5
+      },
+      "packedVolumeLiters": 0.14748357600000025,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 1,
+      "allowedBagIds": [
+        "case-cabin"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "must_have"
+    },
+    {
+      "id": "item-photo-fbc15a9a09d76118:instance:1",
+      "instance_ids": [
+        "item-photo-fbc15a9a09d76118:instance:1"
+      ],
+      "dimsIn": {
+        "lengthIn": 4.499999999999997,
+        "widthIn": 4.000000000000004,
+        "heightIn": 4
+      },
+      "packedVolumeLiters": 0.5899343040000004,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 3,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "must_have"
+    },
+    {
+      "id": "item-photo-56a2fb02aaece38f:instance:1",
+      "instance_ids": [
+        "item-photo-56a2fb02aaece38f:instance:1"
+      ],
+      "dimsIn": {
+        "lengthIn": 100,
+        "widthIn": 25,
+        "heightIn": 4
+      },
+      "packedVolumeLiters": 163.87064,
+      "geometry_source": "instance",
+      "flexible": false,
+      "uprightOnly": false,
+      "category": 1,
+      "allowedBagIds": [
+        "case-cabin",
+        "case-checked"
+      ],
+      "preferCarryOn": false,
+      "preferOnTop": false,
+      "priority": "nice_to_have"
+    }
+  ],
+  "placements": [
+    {
+      "unit_id": "item-photo-2605f320754e91a5:instance:1",
+      "bag_id": "case-cabin",
+      "layer": 1,
+      "order": 1,
+      "xIn": 0,
+      "yIn": 0,
+      "rotated": false
+    },
+    {
+      "unit_id": "shoe_pair:item-photo-6dc840aad4369991:1",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 1,
+      "xIn": 0,
+      "yIn": 0,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-6dc840aad4369991:instance:3",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 2,
+      "xIn": 0,
+      "yIn": 7.999999999999997,
+      "rotated": false
+    },
+    {
+      "unit_id": "liquids_checked",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 3,
+      "xIn": 0,
+      "yIn": 11.999999999999996,
+      "rotated": false
+    },
+    {
+      "unit_id": "liquids_cabin",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 4,
+      "xIn": 0,
+      "yIn": 15.999999999999995,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-759503c1eeb11bc4:instance:1",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 5,
+      "xIn": 4.500000000000003,
+      "yIn": 0,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-759503c1eeb11bc4:instance:3",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 6,
+      "xIn": 4.500000000000003,
+      "yIn": 4,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-759503c1eeb11bc4:instance:8",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 7,
+      "xIn": 4.500000000000003,
+      "yIn": 8,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-759503c1eeb11bc4:instance:4",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 8,
+      "xIn": 4.500000000000003,
+      "yIn": 12,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-759503c1eeb11bc4:instance:6",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 9,
+      "xIn": 4.500000000000003,
+      "yIn": 16,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-759503c1eeb11bc4:instance:7",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 10,
+      "xIn": 9.000000000000005,
+      "yIn": 0,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-759503c1eeb11bc4:instance:2",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 11,
+      "xIn": 9.000000000000005,
+      "yIn": 3.9999999999999987,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-759503c1eeb11bc4:instance:5",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 12,
+      "xIn": 9.000000000000005,
+      "yIn": 7.999999999999998,
+      "rotated": false
+    },
+    {
+      "unit_id": "item-photo-fbc15a9a09d76118:instance:1",
+      "bag_id": "case-checked",
+      "layer": 1,
+      "order": 13,
+      "xIn": 9.000000000000005,
+      "yIn": 11.999999999999996,
+      "rotated": false
+    }
+  ],
+  "fallback": [
+    {
+      "unit_id": "item-photo-56a2fb02aaece38f:instance:1",
+      "reason": "No eligible bag accepted this unit under the supplied dimensions, weight, and volume limits.",
+      "must_have": false,
+      "suggestions": [
+        "revise_bags_or_measurements",
+        "move_to_other_bag",
+        "leave_at_home"
+      ],
+      "requires_user_decision": true
+    }
+  ],
+  "totalItemWeightKg": 9.030000000000001,
+  "attempts": 1,
+  "issues": [],
+  "warnings": [
+    "Integration proposal: category mapping and soft preference shortlist are provisional; no physical-fit guarantee.",
+    "Layer adapter assumes ordinary handling; fragility and cleanliness need a future contract before applying to shared state.",
+    "item-photo-fbc15a9a09d76118: Material-matched sleeping-bag estimate; compression pressure, construction and fill quality may differ. Fit is not guaranteed.",
+    "item-photo-fbc15a9a09d76118: Transferring a sleeping-bag ratio to a jacket or pillow has not been calibrated against measurements."
+  ]
+}

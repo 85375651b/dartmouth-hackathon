@@ -1,0 +1,74 @@
+[
+  {
+    "case": "a",
+    "description": "4 identical sneakers and 1 boot, already counted and tagged. Readable preexisting IDs are preserved.",
+    "input": [
+      { "id": "item-sneakers", "label": "shoes", "count": 4, "attributes": { "type": "sneakers_running" }, "flags": [], "placement_tag": "no-matching-rule" },
+      { "id": "item-boot", "label": "shoes", "count": 1, "attributes": { "type": "boots_hiking" }, "flags": [], "placement_tag": "no-matching-rule" }
+    ],
+    "expected": {
+      "items": [
+        { "id": "item-sneakers", "label": "shoes", "count": 4, "attributes": { "type": "sneakers_running" }, "flags": [], "placement_tag": "no-matching-rule" },
+        { "id": "item-boot", "label": "shoes", "count": 1, "attributes": { "type": "boots_hiking" }, "flags": ["unpaired_shoe"], "placement_tag": "no-matching-rule" }
+      ],
+      "bundles": [
+        { "bundle_id": "shoe_pair:item-sneakers:1", "kind": "shoe_pair", "members": [{ "item_id": "item-sneakers", "qty": 2 }], "placement_tag": "either", "flags": [] },
+        { "bundle_id": "shoe_pair:item-sneakers:2", "kind": "shoe_pair", "members": [{ "item_id": "item-sneakers", "qty": 2 }], "placement_tag": "either", "flags": [] }
+      ]
+    }
+  },
+  {
+    "case": "b",
+    "description": "7 observed shoes became 8 in the unchanged count stage. F removes that synthetic +1 and keeps the real leftover, matching explicit test b.",
+    "input": [
+      { "id": "item-shoes", "label": "shoes", "count": 8, "attributes": { "type": "sneakers_running" }, "flags": [], "placement_tag": "no-matching-rule" }
+    ],
+    "expected": {
+      "items": [
+        { "id": "item-shoes", "label": "shoes", "count": 7, "attributes": { "type": "sneakers_running" }, "flags": ["shoe_count_correction_removed", "unpaired_shoe"], "placement_tag": "no-matching-rule" }
+      ],
+      "bundles": [
+        { "bundle_id": "shoe_pair:item-shoes:1", "kind": "shoe_pair", "members": [{ "item_id": "item-shoes", "qty": 2 }], "placement_tag": "either", "flags": [] },
+        { "bundle_id": "shoe_pair:item-shoes:2", "kind": "shoe_pair", "members": [{ "item_id": "item-shoes", "qty": 2 }], "placement_tag": "either", "flags": [] },
+        { "bundle_id": "shoe_pair:item-shoes:3", "kind": "shoe_pair", "members": [{ "item_id": "item-shoes", "qty": 2 }], "placement_tag": "either", "flags": [] }
+      ]
+    }
+  },
+  {
+    "case": "c",
+    "description": "3 products were tagged with confirmed capacities at or under 0.1 L; the fourth was tagged checked-only using its 0.25 L capacity. F only reads those tags and assumed_full flags.",
+    "input": [
+      { "id": "item-liquid-1", "label": "shampoo", "count": 1, "attributes": {}, "flags": ["assumed_full"], "placement_tag": "no-matching-rule" },
+      { "id": "item-liquid-2", "label": "lotion", "count": 1, "attributes": {}, "flags": ["assumed_full"], "placement_tag": "no-matching-rule" },
+      { "id": "item-liquid-3", "label": "sunscreen", "count": 1, "attributes": {}, "flags": ["assumed_full"], "placement_tag": "no-matching-rule" },
+      { "id": "item-liquid-4", "label": "hair gel", "count": 1, "attributes": {}, "flags": ["assumed_full"], "placement_tag": "checked-only" }
+    ],
+    "expected": {
+      "items": [
+        { "id": "item-liquid-1", "label": "shampoo", "count": 1, "attributes": {}, "flags": ["assumed_full"], "placement_tag": "no-matching-rule" },
+        { "id": "item-liquid-2", "label": "lotion", "count": 1, "attributes": {}, "flags": ["assumed_full"], "placement_tag": "no-matching-rule" },
+        { "id": "item-liquid-3", "label": "sunscreen", "count": 1, "attributes": {}, "flags": ["assumed_full"], "placement_tag": "no-matching-rule" },
+        { "id": "item-liquid-4", "label": "hair gel", "count": 1, "attributes": {}, "flags": ["assumed_full"], "placement_tag": "checked-only" }
+      ],
+      "bundles": [
+        { "bundle_id": "liquids_cabin", "kind": "liquids", "members": [{ "item_id": "item-liquid-1", "qty": 1 }, { "item_id": "item-liquid-2", "qty": 1 }, { "item_id": "item-liquid-3", "qty": 1 }], "placement_tag": "either", "flags": ["assumed_full"] },
+        { "bundle_id": "liquids_checked", "kind": "liquids", "members": [{ "item_id": "item-liquid-4", "qty": 1 }], "placement_tag": "checked_only", "flags": ["assumed_full"] }
+      ]
+    }
+  },
+  {
+    "case": "d",
+    "description": "A water bottle and a flask are assumed-empty drinking vessels, not liquid products.",
+    "input": [
+      { "id": "item-bottle", "label": "water bottle", "count": 1, "attributes": { "material": "plastic" }, "flags": ["assumed_empty"], "placement_tag": "no-matching-rule" },
+      { "id": "item-flask", "label": "flask", "count": 1, "attributes": { "material": "steel" }, "flags": ["assumed_empty"], "placement_tag": "no-matching-rule" }
+    ],
+    "expected": {
+      "items": [
+        { "id": "item-bottle", "label": "water bottle", "count": 1, "attributes": { "material": "plastic" }, "flags": ["assumed_empty"], "placement_tag": "no-matching-rule" },
+        { "id": "item-flask", "label": "flask", "count": 1, "attributes": { "material": "steel" }, "flags": ["assumed_empty"], "placement_tag": "no-matching-rule" }
+      ],
+      "bundles": []
+    }
+  }
+]
