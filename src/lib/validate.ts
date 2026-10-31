@@ -41,14 +41,22 @@ export function validatePackWiseData(data: PackWiseData): ValidationResult {
 
   // Physical values
   for (const item of items) {
-    const { lengthCm, widthCm, heightCm } = item.dimensionsCm;
-    if ([item.weightKg, item.volumeLiters, lengthCm, widthCm, heightCm].some((v) => !(v > 0))) {
-      errors.push(`Item "${item.id}" must have positive weight, volume, and dimensions.`);
+    if (item.weightKg !== null && (!Number.isFinite(item.weightKg) || item.weightKg < 0)) {
+      errors.push(`Item "${item.id}" must have a finite nonnegative weight.`);
+    }
+    if (item.volumeLiters !== null && (!Number.isFinite(item.volumeLiters) || item.volumeLiters <= 0)) {
+      errors.push(`Item "${item.id}" must have a finite positive volume.`);
+    }
+    if (item.dimensionsCm && Object.values(item.dimensionsCm).some((v) => !Number.isFinite(v) || v <= 0)) {
+      errors.push(`Item "${item.id}" must have finite positive dimensions.`);
+    }
+    if (item.weightKg === null || item.volumeLiters === null || item.dimensionsCm === null) {
+      warnings.push(`Item "${item.id}" has unknown measurements; plan totals may be incomplete.`);
     }
     if (!Number.isInteger(item.quantity) || item.quantity < 1) {
       errors.push(`Item "${item.id}" must have a whole-number quantity of at least 1.`);
     }
-    if (item.volumeLiters > boxVolumeLiters(item.dimensionsCm) + 1e-9) {
+    if (item.volumeLiters !== null && item.dimensionsCm && item.volumeLiters > boxVolumeLiters(item.dimensionsCm) + 1e-9) {
       errors.push(`Item "${item.id}" volume exceeds its bounding box.`);
     }
   }
@@ -67,7 +75,7 @@ export function validatePackWiseData(data: PackWiseData): ValidationResult {
       if (item.carryOnRequired && suitcase.kind !== "carry-on") {
         errors.push(`Item "${item.id}" must travel in a carry-on, not "${suitcase.id}".`);
       }
-      if (!fitsWithin(item.dimensionsCm, suitcase.dimensionsCm)) {
+      if (item.dimensionsCm && !fitsWithin(item.dimensionsCm, suitcase.dimensionsCm)) {
         errors.push(`Item "${item.id}" does not fit inside "${suitcase.id}".`);
       }
     }

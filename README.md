@@ -28,6 +28,10 @@ npm run dev
 Open <http://localhost:3000>. Edits reload automatically. If port 3000 is busy,
 run `npm run dev -- --port 3001` and open that port instead. Stop with Ctrl+C.
 
+If Turbopack crashes while starting a CSS worker on Windows, use
+`npm run dev -- --webpack --hostname 127.0.0.1`. For a production build with
+the same workaround, run `npm run build -- --webpack`.
+
 ### Verification
 
 ```sh
@@ -48,6 +52,9 @@ To preview the production build locally: `npm run build && npm start`, then open
 Run focused optimizer tests with
 `node --experimental-strip-types --test scripts/packing-optimizer.test.ts`.
 There is no linter yet.
+
+Run inventory regression tests with
+`node --experimental-strip-types --test scripts/inventory.test.ts`.
 
 ### What exists
 
@@ -125,7 +132,59 @@ references, passport details, or card numbers. Reloading or **Reset demo** resto
 all sample settings and clears drafts; there is no persistence.
 
 Not included yet: login, database or persistence, 3D graphics, AI features,
-automatic packing controls, or editing inventory items and room zones in the UI.
+automatic packing controls, or editing room zones in the UI.
+
+### Inventory editor (T05)
+
+The dashboard includes a responsive add/edit form and inventory list. Enter a
+name, category, optional weight (kg) and volume (L), fragility, cleanliness,
+and carry-on requirement. Edit preserves the item's ID, quantity, notes, and
+existing dimensions. Delete removes its references from the trip and both plans.
+The list shows entry count, known weight, and how many weights are unknown.
+Changes are in browser memory and reset on refresh or **Reset demo**.
+
+`src/components/InventoryEditor.tsx` is controlled through `items: Item[]` and
+`onChange(items)`. The dashboard connects it to the shared store's `setItems`
+action. T06 and T11 can read `usePackWise().data.items` and dispatch
+`{ type: "setItems", items: nextItems }` to add or update entries immutably.
+Use stable `item-…` IDs, and preserve existing metadata when updating items.
+New items are unassigned in both plans; no optimizer or photo recognition is
+implemented here. Carry-on edits remove incompatible checked-bag assignments.
+The T06 optimizer requires confirmed measurements; unknown weight, volume, or
+dimensions produce an actionable validation error before planning.
+
+Shared `Item` measurements now accept `null` for unknown weight, volume, and
+dimensions. Do not infer measurements or treat unknown as a confirmed zero.
+Weight may be zero; known volume and dimensions must be positive and finite.
+Very small and large measurements use scientific notation so positive values
+never appear as zero. Saves that would overflow a total weight or volume are
+rejected with a field error. Cancel discards the draft and announces cancellation.
+Totals sum known measurements only, with an incomplete-total notice in affected
+views. Future optimizers must request or confirm missing measurements before
+claiming a bag fits or is under its limit. `ItemCategory` adds `other` while
+preserving all original categories. Optional `cleanliness` supports `clean`,
+`dirty`, and `protected`; legacy demo entries display as clean.
+
+Browser verification (start at <http://localhost:3000>):
+
+1. Delete the demo entries to exercise the empty state. Refresh restores them.
+2. Add Laptop, Electronics, 1.5 kg; then Sneakers, Shoes, 0.9 kg. Leave volume
+   blank. Confirm two entries and 2.4 kg known weight in both inventory and trip.
+3. Edit Laptop to 1.8 kg; confirm 2.7 kg. Delete Sneakers; confirm only Laptop
+   remains with 1.8 kg.
+4. Submit an empty/whitespace name, negative weight, or zero/negative volume.
+   Confirm errors and no new item. Zero weight is allowed.
+5. Add an item with blank measurements. Confirm unknown labels and an
+   incomplete-total notice, with no invented measurement.
+6. Edit an assigned demo item and confirm suitcase/room views update. Delete
+   it and confirm it disappears from those views. Check the form stacks above
+   the list on a narrow screen.
+
+T05 verification: TypeScript and demo-data validation pass. Browser checks
+cover the add/edit/delete sequence, parent summary updates, unknown values,
+and invalid input. Production build passes with `--webpack`; the default
+Turbopack build crashes starting its CSS worker on this machine. There is no
+configured lint command, so no lint result is claimed.
 
 ### File layout and suggested ownership
 

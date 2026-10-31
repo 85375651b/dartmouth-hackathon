@@ -11,6 +11,9 @@ export function RoomZoneCard({ load }: { load: RoomZoneLoad }) {
       <p className="text-xs font-medium uppercase tracking-wide text-brand-600">{zone.kind}</p>
       <h3 className="text-sm font-semibold">{zone.name}</h3>
       <div className="mt-3">
+        {items.some((item) => item.volumeLiters === null) && (
+          <p className="mb-2 text-xs text-amber-800">Some volumes are unknown. Space used is incomplete.</p>
+        )}
         <Meter
           label="Space used"
           value={load.usedLiters}

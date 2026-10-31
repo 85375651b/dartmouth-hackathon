@@ -12,6 +12,9 @@ import { boxVolumeLiters, fitsWithin } from "../units.ts";
 
 export type PackingOptimizationInput = Pick<PackWiseData, "trip" | "items" | "suitcases" | "packingPlan">;
 
+type MeasuredItem = Item & { weightKg: number; volumeLiters: number; dimensionsCm: DimensionsCm };
+type MeasuredPackingInput = Omit<PackingOptimizationInput, "items"> & { items: MeasuredItem[] };
+
 export type PackingRejectionReason = "carry-on-required" | "dimensions" | "weight" | "volume";
 
 export interface UnassignedPackingItem {
@@ -32,7 +35,7 @@ export interface PackingOptimizationResult {
 
 interface BagState {
   suitcase: Suitcase;
-  items: Item[];
+  items: MeasuredItem[];
   contentsWeightKg: number;
   usedLiters: number;
 }
@@ -114,7 +117,7 @@ export function optimizePacking(data: PackingOptimizationInput): PackingOptimiza
   };
 }
 
-function rejectionReasons(item: Item, bag: BagState): PackingRejectionReason[] {
+function rejectionReasons(item: MeasuredItem, bag: BagState): PackingRejectionReason[] {
   const { suitcase } = bag;
   if (item.carryOnRequired && suitcase.kind !== "carry-on") return ["carry-on-required"];
   const reasons: PackingRejectionReason[] = [];
@@ -146,7 +149,7 @@ function explainUnassigned(
   return `This entry was not placed by this packing pass.${carryOn} To try again, ${actions.join("; ")}.`;
 }
 
-function validateInput(data: PackingOptimizationInput): void {
+function validateInput(data: PackingOptimizationInput): asserts data is MeasuredPackingInput {
   requireId(data.trip.id, "trip-");
   requireId(data.packingPlan.id, "pack-");
   if (data.packingPlan.tripId !== data.trip.id) throw new Error("Packing plan must belong to the current trip.");
@@ -154,7 +157,7 @@ function validateInput(data: PackingOptimizationInput): void {
   validateMembership(data.suitcases, data.trip.suitcaseIds, "case-");
 
   for (const item of data.items) {
-    if (![item.weightKg, item.volumeLiters].every(positiveFinite) || !validDimensions(item.dimensionsCm)) {
+    if (!positiveFinite(item.weightKg) || !positiveFinite(item.volumeLiters) || !validDimensions(item.dimensionsCm)) {
       throw new Error(`Item "${item.id}" needs positive finite weight, volume, and dimensions.`);
     }
     if (!Number.isSafeInteger(item.quantity) || item.quantity < 1) {
@@ -191,10 +194,10 @@ function requireId(id: string, prefix: string): void {
   }
 }
 
-function positiveFinite(value: number): boolean {
-  return Number.isFinite(value) && value > 0;
+function positiveFinite(value: number | null): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value > 0;
 }
 
-function validDimensions(dimensions: DimensionsCm): boolean {
-  return [dimensions.lengthCm, dimensions.widthCm, dimensions.heightCm].every(positiveFinite);
+function validDimensions(dimensions: DimensionsCm | null): dimensions is DimensionsCm {
+  return !!dimensions && [dimensions.lengthCm, dimensions.widthCm, dimensions.heightCm].every(positiveFinite);
 }

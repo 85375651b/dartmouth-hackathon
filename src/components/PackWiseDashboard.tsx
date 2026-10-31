@@ -5,11 +5,12 @@ import { SuitcaseCard } from "@/components/packing/SuitcaseCard";
 import { DemoBanner } from "@/components/shared/DemoBanner";
 import { TripSummary } from "@/components/trip/TripSummary";
 import { TripSettings } from "@/components/trip/TripSettings";
+import { InventoryEditor } from "@/components/InventoryEditor";
 import { roomZoneLoads, suitcaseLoads } from "@/lib/loads";
 import { usePackWise } from "@/state/packwise-store";
 
 export function PackWiseDashboard() {
-  const { data } = usePackWise();
+  const { data, dispatch } = usePackWise();
   const packed = suitcaseLoads(data);
   const placed = roomZoneLoads(data);
 
@@ -23,6 +24,7 @@ export function PackWiseDashboard() {
       <DemoBanner />
       <TripSummary />
       <TripSettings />
+      <InventoryEditor items={data.items} onChange={(items) => dispatch({ type: "setItems", items })} />
 
       <section aria-labelledby="packed-heading">
         <h2 id="packed-heading" className="mb-3 text-xl font-semibold">

@@ -7,7 +7,6 @@ import type {
   RoomZone,
   Suitcase,
 } from "./types.ts";
-import { round1 } from "./units.ts";
 
 /** Builds an ID → entity lookup. Duplicate IDs keep the last entry. */
 export function indexById<T extends { id: string }>(entities: T[]): Map<T["id"], T> {
@@ -34,9 +33,9 @@ export function suitcaseLoads(data: PackWiseData): SuitcaseLoad[] {
       .sort((a, b) => a.packOrder - b.packOrder)
       .map((a) => items.get(a.itemId))
       .filter((item): item is Item => item !== undefined);
-    const contentsWeightKg = sum(packed, (i) => i.weightKg);
+    const contentsWeightKg = sum(packed, (i) => i.weightKg ?? 0);
     const totalWeightKg = contentsWeightKg + suitcase.emptyWeightKg;
-    const usedLiters = sum(packed, (i) => i.volumeLiters);
+    const usedLiters = sum(packed, (i) => i.volumeLiters ?? 0);
     return {
       suitcase,
       items: packed,
@@ -66,7 +65,7 @@ export function roomZoneLoads(data: PackWiseData): RoomZoneLoad[] {
       .sort((a, b) => a.unpackOrder - b.unpackOrder)
       .map((a) => items.get(a.itemId))
       .filter((item): item is Item => item !== undefined);
-    const usedLiters = round1(sum(placed, (i) => i.volumeLiters));
+    const usedLiters = sum(placed, (i) => i.volumeLiters ?? 0);
     return { zone, items: placed, usedLiters, overVolume: usedLiters > zone.capacityLiters };
   });
 }

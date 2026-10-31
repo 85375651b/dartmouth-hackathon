@@ -144,6 +144,7 @@ test("dimension checks support rotation without treating liters as physical fit"
   const result = optimizePacking(data);
   assert.equal(result.packingPlan.assignments.length, 1);
   assertCompleteAndValid(data, result);
+  assert.ok(data.items[0].dimensionsCm);
   data.items[0].dimensionsCm.widthCm = 41;
   const tooLong = optimizePacking(data);
   assert.deepEqual(tooLong.unassignedItems[0].suitcaseFailures[0].reasons, ["dimensions"]);
