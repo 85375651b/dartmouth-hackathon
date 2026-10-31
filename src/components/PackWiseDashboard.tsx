@@ -5,6 +5,7 @@ import { SuitcaseCard } from "@/components/packing/SuitcaseCard";
 import { DemoBanner } from "@/components/shared/DemoBanner";
 import { TripSummary } from "@/components/trip/TripSummary";
 import { TripSettings } from "@/components/trip/TripSettings";
+import { PhotoAreaPacking } from "@/components/photo-packing/PhotoAreaPacking";
 import { InventoryEditor } from "@/components/InventoryEditor";
 import { suitcaseLoads } from "@/lib/loads";
 import { usePackWise } from "@/state/packwise-store";
@@ -24,6 +25,8 @@ export function PackWiseDashboard() {
       <TripSummary />
       <TripSettings />
       <InventoryEditor items={data.items} onChange={(items) => dispatch({ type: "setItems", items })} />
+
+      <PhotoAreaPacking />
 
       <section aria-labelledby="packed-heading">
         <h2 id="packed-heading" className="mb-3 text-xl font-semibold">

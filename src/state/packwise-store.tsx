@@ -7,10 +7,13 @@
 import { createContext, useContext, useMemo, useReducer, useCallback, type ReactNode } from "react";
 import { createDemoData } from "@/lib/demo-data";
 import { applyTripSettings, type TripSettingsDraft } from "@/lib/trip-settings";
+import { applyAreaPlan } from "@/lib/photo-packing/plan";
+import type { AreaPlan } from "@/lib/photo-packing/types";
 import { saveRoomZone, setRoomZoneConfirmation, removeRoomZone, type RoomZoneDraft } from "@/lib/room-zones";
 import type { Item, ItemId, PackWiseData, RoomZoneId, SuitcaseId } from "@/lib/types";
 
 export type PackWiseAction =
+  | { type: "applyAreaPlan"; plan: AreaPlan }
   | { type: "setItems"; items: Item[] }
   | { type: "saveRoomZone"; draft: RoomZoneDraft; id: RoomZoneId; creating: boolean }
   | { type: "confirmRoomZone"; id: RoomZoneId; confirmed: boolean }
@@ -22,6 +25,7 @@ export type PackWiseAction =
 
 export function packWiseReducer(state: PackWiseData, action: PackWiseAction): PackWiseData {
   switch (action.type) {
+    case "applyAreaPlan": return applyAreaPlan(state, action.plan);
     case "saveRoomZone":
       return saveRoomZone(state, action.draft, action.id, action.creating);
     case "confirmRoomZone":

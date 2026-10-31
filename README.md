@@ -84,6 +84,27 @@ Run inventory regression tests with
 - **Packing optimizer (T06)** (`src/lib/packing/optimize-packing.ts`): a pure,
   deterministic function; not yet wired to the dashboard or store.
 
+### Top-down photo area packing
+
+**Pack from a top-down photo** combines usable interior length/width, local image
+analysis, detected item review, categories and 2D layer diagrams in one section.
+Enter cm or inches and upload one overhead photograph. No user-selected corners,
+pixels, item measurements, profile photo, depth or volume calculations are used
+by this feature. Categorized items continue into partially occupied layers.
+
+Automatic detection is a restricted, browser-only contrast/connected-region
+algorithm, not a general object-recognition model. It needs a plain contrasting
+background, an empty clearly framed relatively uniform interior, and separated
+items. It rejects unclear geometry and requests a retake. Names/categories need
+explicit review; no semantic suggestions or calibrated confidence are invented.
+Photos never leave the tab. No packages, credentials or services are required.
+
+Review overlays, confirm categories, generate the footprint proposal, then Apply
+explicitly. Optional inventory links are chosen by the user; unmatched detections
+remain photo-only. Area arrangements cannot establish stacking height or closure.
+Existing inventory volume/weight features, room dimensions and the legacy T06
+optimizer are preserved and separate. See [method, limits and verification](docs/photo-area-packing.md).
+
 ### Packing optimizer
 
 Call `optimizePacking(data)` with the current trip, items, suitcases, and packing
@@ -135,7 +156,7 @@ references, passport details, or card numbers. Reloading or **Reset demo** resto
 all sample settings and clears drafts; there is no persistence.
 
 Not included yet: login, database or persistence, 3D graphics, AI features,
-automatic packing controls and automatic unpacking.
+automatic unpacking.
 
 ### Edit room storage (T12)
 

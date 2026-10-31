@@ -166,6 +166,8 @@ export interface Suitcase {
   /** Stored estimate of usable interior volume; not an airline allowance. */
   capacityLiters: Liters;
   dimensionsCm: DimensionsCm;
+  /** Explicit user-reviewed usable interior; separate from the visible exterior. */
+  interiorFootprintCm?: { lengthCm: number; widthCm: number };
 }
 
 export type RoomZoneKind =
@@ -212,6 +214,7 @@ export interface PackingPlan {
   assignments: PackingAssignment[];
   /** Items intentionally left out of every suitcase. */
   unassignedItemIds: ItemId[];
+  areaPlans?: import("./photo-packing/types.ts").AreaPlan[];
 }
 
 /** Places one item in one room storage zone. */
