@@ -90,8 +90,9 @@ test("Claude adapter sends the image and a strict schema, preserving raw counts 
     assert.deepEqual(branches[0].required, ["label", "count", "attributes", "flags"]);
     assert.equal(branches[0].additionalProperties, false);
     assert.deepEqual(branches[0].properties.label.enum, ["laptop"]);
-    assert.deepEqual(branches[0].properties.attributes.properties.type.enum,
-      ["ultrabook_thin_light", "standard", "gaming_or_workstation", "tablet_or_2in1", null]);
+    // Nullable enum is an anyOf: Claude's schema checker rejects type ["string","null"] with an enum.
+    assert.deepEqual(branches[0].properties.attributes.properties.type.anyOf,
+      [{ type: "string", enum: ["ultrabook_thin_light", "standard", "gaming_or_workstation", "tablet_or_2in1"] }, { type: "null" }]);
     assert.ok(!JSON.stringify(branches).includes("placement_tag"), "AI does not supply baggage decisions");
     assert.match(body.system, /Never guess/);
     assert.match(body.system, /steel from aluminum/);

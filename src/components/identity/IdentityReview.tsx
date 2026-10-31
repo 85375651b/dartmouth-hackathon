@@ -11,6 +11,8 @@ const bags: PipelineBag[] = [
   { id: 'case-review-cabin', kind: 'carry-on', interiorIn: { lengthIn: 22, widthIn: 14, heightIn: 9 }, emptyWeightKg: 2, maxWeightKg: 10, capacityLiters: 40 },
   { id: 'case-review-checked', kind: 'checked', interiorIn: { lengthIn: 28, widthIn: 18, heightIn: 12 }, emptyWeightKg: 4, maxWeightKg: 23, capacityLiters: 90 },
 ];
+/** Photo ID that src/app/packing-review/page.tsx uses for its sample inventory. */
+const SAMPLE_PHOTO_ID = 'review-demo';
 const field = 'rounded border border-slate-300 bg-white px-2 py-1 text-slate-900';
 export function IdentityReview({ initialLedger }: { initialLedger: IdentityLedger }) {
   const [ledger, setLedger] = useState(initialLedger), [error, setError] = useState(''), [busy, setBusy] = useState(false);
@@ -31,6 +33,9 @@ export function IdentityReview({ initialLedger }: { initialLedger: IdentityLedge
       const form = new FormData(); form.append('image', file);
       const response = await fetch('/api/identify-objects', { method: 'POST', body: form });
       const data = await response.json(); if (!response.ok) throw new Error(data.error);
+      // A real photo replaces the sample inventory (page.tsx seeds it under SAMPLE_PHOTO_ID).
+      const sampleIds = ledger.instances.filter(i => i.observations.every(o => o.photo_id === SAMPLE_PHOTO_ID)).map(i => i.id);
+      if (sampleIds.length) { setLedger(sampleIds.reduce(removeInstance, ledger)); revision.current++; setResult(null); }
       setPending({ photoId: `photo-${crypto.randomUUID()}`, items: data.items }); setLinks({});
     } catch (e) { setError(e instanceof Error ? e.message : 'Identification failed.'); } finally { setBusy(false); }
   }

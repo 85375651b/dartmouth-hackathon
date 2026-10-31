@@ -129,7 +129,14 @@ export function createPipeline(overrides: Partial<PipelineStages> = {}) {
       if (weight) {
         positive(weight.unitKg, 'Unit mass'); positive(weight.totalKg, 'Entry mass');
         if (Math.abs(weight.totalKg - weight.unitKg * item.count) > 1e-9) throw new Error('Weight must be per-unit times final count, exactly once.');
-        if (weight.review_required) warnings.push(`${item.id}: fallback mass estimate requires review. ${weight.limitation ?? ''}`.trim());
+        if (weight.review_required) {
+          // Name the actual source: only placeholder and configured-ceiling masses are fallbacks.
+          const kg = `${+weight.unitKg.toFixed(3)} kg each`;
+          const origin = weight.source === 'placeholder' ? `placeholder mass (${kg}; no reference product for this label)`
+            : weight.source === 'fallback_ceiling' ? `fallback mass (${kg}; configured ceiling)`
+            : `reference product mass (${kg}; ${weight.source_urls?.join(', ') || 'catalog'})`;
+          warnings.push(`${item.label} (${item.id}): ${origin} requires review. ${weight.limitation ?? ''}`.trim());
+        }
       }
       const enriched = { ...item, instances, classification, preferences, weight, priority: user.items?.[item.id]?.priority ?? 'must_have' as const };
       if (classification && ![1, 2, 3].includes(classification.category)) throw new Error('Unknown packing category.');

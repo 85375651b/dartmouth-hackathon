@@ -74,7 +74,8 @@ export const OBJECT_IDENTIFICATION_SCHEMA = {
               ...commonProperties,
               attributes: {
                 type: "object",
-                properties: { [rule.key]: { type: ["string", "null"], enum: [...rule.values, null] } },
+                // Claude's schema checker rejects `type: ["string","null"]` combined with an enum.
+                properties: { [rule.key]: { anyOf: [{ type: "string", enum: [...rule.values] }, { type: "null" }] } },
                 required: [rule.key],
                 additionalProperties: false,
               },
