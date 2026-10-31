@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ClaudePack — Less guesswork. More getaway.",
+  title: "ClaudePack",
   description: "Turn a packing photo into a step-by-step getaway.",
 };
 

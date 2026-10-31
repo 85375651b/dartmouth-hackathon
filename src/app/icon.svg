@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none"><rect x="4" y="4" width="88" height="88" rx="25" fill="#123E32"/><path d="M37 30v-7a5 5 0 0 1 5-5h12a5 5 0 0 1 5 5v7" stroke="#E8ECD8" stroke-width="5"/><rect x="22" y="30" width="52" height="48" rx="10" stroke="#E8ECD8" stroke-width="4"/><path d="m48 36-15 19h8l-12 13h16v7h6v-7h16L55 55h8L48 36Z" fill="#E8ECD8"/><path d="m76 15 1.7 6 5.8-2.3-3.4 5.2 5.4 3-6.2.6.4 6.2-3.7-5-4.6 4.2 1.8-6-5.8-2.1 6.1-1.5-.6-6.2 3.1 5.4L76 15Z" fill="#E8A178"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+  <rect x="4" y="4" width="88" height="88" rx="25" fill="#00693E"/>
+  <path d="M37 30v-7a5 5 0 0 1 5-5h12a5 5 0 0 1 5 5v7" stroke="#FFFFFF" stroke-width="5"/>
+  <rect x="22" y="30" width="52" height="48" rx="10" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+  <polygon points="48.00,37.00 50.07,46.27 56.50,39.28 53.66,48.34 62.72,45.50 55.73,51.93 65.00,54.00 55.73,56.07 62.72,62.50 53.66,59.66 56.50,68.72 50.07,61.73 48.00,71.00 45.93,61.73 39.50,68.72 42.34,59.66 33.28,62.50 40.27,56.07 31.00,54.00 40.27,51.93 33.28,45.50 42.34,48.34 39.50,39.28 45.93,46.27" fill="#D97757"/>
+</svg>

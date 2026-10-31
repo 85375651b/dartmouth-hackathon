@@ -1,10 +1,8 @@
 # ClaudePack
 
-**Less guesswork. More getaway.**
-
 ClaudePack turns a top-down packing photo into reviewed, category-ordered footprint
-arrangements and step-by-step illustrative 3D layers. Its original suitcase/pine
-SVG mark combines forest green with a warm starburst; assets live in
+arrangements and step-by-step illustrative 3D layers. Its SVG mark shows an orange star inside a white suitcase outline
+on Dartmouth green; assets live in
 `public/claudepack-mark.svg` and `src/app/icon.svg`.
 
 ## Run locally
