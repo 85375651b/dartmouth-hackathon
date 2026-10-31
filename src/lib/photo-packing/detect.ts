@@ -1,42 +1,18 @@
-import { areaRatio, envelope, hull, pixelScale, planeTransform, polygonArea, positive, project, type Footprint, type Point } from './geometry.ts';
+import { detectScene } from './scene.ts';
+import { components, pixelOutline, type Component } from './regions.ts';
+import { backgroundMask, denoise } from './background.ts';
+import { areaRatio, envelope, pixelScale, planeTransform, polygonArea, positive, project, type Footprint, type Point } from './geometry.ts';
 import type { Analysis } from './types.ts';
 export interface Raster { width:number; height:number; data:Uint8ClampedArray }
 const colorDistance=(a:number[],b:number[])=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
 const RETAKE=' Retake straight from above on a plain contrasting surface, with an empty, clearly framed interior and separated items.';
-interface Component { pixels:number[]; outline:Point[]; border:boolean }
-/** 4-connected regions. No semantic labels or learned confidence are fabricated. */
-function components(width:number,height:number,accept:(a:number,b:number)=>boolean):{regions:Component[];labels:Int32Array} {
-  const labels=new Int32Array(width*height).fill(-1),regions:Component[]=[];
-  for(let seed=0;seed<labels.length;seed++) {
-    if(labels[seed]!==-1)continue;
-    const id=regions.length,queue=[seed],outline:Point[]=[];labels[seed]=id;let border=false;
-    for(let cursor=0;cursor<queue.length;cursor++) {
-      const i=queue[cursor],x=i%width,y=Math.floor(i/width);let edge=false;
-      if(x===0||y===0||x===width-1||y===height-1)border=true;
-      for(const j of [x>0?i-1:-1,x<width-1?i+1:-1,y>0?i-width:-1,y<height-1?i+width:-1]) {
-        if(j<0||!accept(seed,j)){edge=true;continue;}
-        if(labels[j]===-1){labels[j]=id;queue.push(j);}
-      }
-      if(edge)outline.push({x,y});
-    }
-    regions.push({pixels:queue,outline,border});
-  }
-  return {regions,labels};
-}
-function pixelOutline(points:Point[]):Point[] {
-  // Pixel centers alone underestimate envelopes; include the full pixel cells.
-  return hull(points.flatMap(p=>[{x:p.x,y:p.y},{x:p.x+1,y:p.y},{x:p.x+1,y:p.y+1},{x:p.x,y:p.y+1}]));
-}
 /** Restricted, image-grounded CV. Designed to fail closed outside controlled captures. */
-export function detectPhoto(raster:Raster,interior:Footprint,id:string,original={width:raster.width,height:raster.height}):Analysis {
+function detectRegions(raster:Raster,interior:Footprint,id:string,original={width:raster.width,height:raster.height}):Analysis {
   const {width:w,height:h,data}=raster,n=w*h;positive(interior.lengthCm);positive(interior.widthCm);positive(interior.lengthCm*interior.widthCm);
   if(!Number.isInteger(w)||!Number.isInteger(h)||w<80||h<80||n>1_000_000||data.length!==n*4)throw new Error('Use a clear photograph at least 80 pixels on each side.');
   const rgb=(i:number)=>[data[4*i],data[4*i+1],data[4*i+2]];
-  const border:number[][]=[];for(let x=0;x<w;x+=Math.max(1,Math.floor(w/80))){border.push(rgb(x),rgb((h-1)*w+x));}for(let y=0;y<h;y+=Math.max(1,Math.floor(h/80)))border.push(rgb(y*w),rgb(y*w+w-1));
-  const background=[0,1,2].map(c=>[...border.map(p=>p[c])].sort((a,b)=>a-b)[Math.floor(border.length/2)]);
-  if(border.filter(p=>colorDistance(p,background)<35).length/border.length<0.85)throw new Error('The background or photo edges are too cluttered.'+RETAKE);
   if(data.some((v,i)=>i%4===3&&v!==255))throw new Error('Use an opaque photograph, not a transparent cutout.');
-  const bgLike=Uint8Array.from({length:n},(_,i)=>colorDistance(rgb(i),background)<35?1:0);
+  const bgLike=backgroundMask(raster);
   const binary=components(w,h,(a,b)=>bgLike[a]===bgLike[b]);
   const outside=new Uint8Array(n);binary.regions.filter(r=>r.border&&bgLike[r.pixels[0]]).forEach(r=>r.pixels.forEach(i=>outside[i]=1));
   const foreground=components(w,h,(a,b)=>outside[a]===outside[b]);
@@ -75,7 +51,7 @@ export function detectPhoto(raster:Raster,interior:Footprint,id:string,original=
   if(!candidates.length)throw new Error('No unambiguous empty rectangular suitcase interior was detected.'+RETAKE);
   if(candidates.length>1&&candidates[1].area>candidates[0].area*0.55)throw new Error('More than one possible suitcase interior was detected. Keep only one open interior visible.'+RETAKE);
   const suitcase=candidates[0],transform=planeTransform(suitcase.quad,interior);
-  const minPixels=Math.max(30,n*0.0008),regions=foreground.regions.filter((r,i)=>i!==suitcase.outer&&!outside[r.pixels[0]]&&r.pixels.length>=minPixels);
+  const minPixels=Math.max(30,n*0.0008),regions=foreground.regions.filter((r,i)=>i!==suitcase.outer&&!outside[r.pixels[0]]&&r.pixels.length>=minPixels).filter(r=>{if(!r.border)return true;const xmin=r.outline.reduce((v,p)=>Math.min(v,p.x),w),xmax=r.outline.reduce((v,p)=>Math.max(v,p.x),0),ymin=r.outline.reduce((v,p)=>Math.min(v,p.y),h),ymax=r.outline.reduce((v,p)=>Math.max(v,p.y),0);return !((xmax-xmin>w*.98&&ymax-ymin<h*.12)||(ymax-ymin>h*.98&&xmax-xmin<w*.12));});
   if(!regions.length)throw new Error('No separate items were detected beside the suitcase.'+RETAKE);
   if(regions.length>40)throw new Error('Too many disconnected regions: the background, shadows or item separation are unclear.'+RETAKE);
   const ordered=regions.sort((a,b)=>Math.min(...a.outline.map(p=>p.y))-Math.min(...b.outline.map(p=>p.y))||Math.min(...a.outline.map(p=>p.x))-Math.min(...b.outline.map(p=>p.x)));
@@ -93,5 +69,18 @@ export function detectPhoto(raster:Raster,interior:Footprint,id:string,original=
   });
   // Keep reproducible axis ratios as well as the full transform for perspective-varying areas.
   const axisScale=pixelScale(interior,Math.hypot(suitcase.quad[1].x-suitcase.quad[0].x,suitcase.quad[1].y-suitcase.quad[0].y),Math.hypot(suitcase.quad[3].x-suitcase.quad[0].x,suitcase.quad[3].y-suitcase.quad[0].y));
-  return {id,width:w,height:h,originalWidth:original.width,originalHeight:original.height,interior:{...interior},suitcaseBoundary:suitcase.quad,suitcasePixelArea:suitcase.area,axisScale,transform,items,method:'Border-background separation, connected components, uniform framed quadrilateral detection, planar correction and conservative oriented envelopes. Geometry checks are not calibrated confidence scores.'};
+  return {id,width:w,height:h,originalWidth:original.width,originalHeight:original.height,interior:{...interior},suitcaseBoundary:suitcase.quad,suitcasePixelArea:suitcase.area,axisScale,transform,items,method:'Robust illumination-plane background separation, connected components, uniform framed quadrilateral detection, planar correction and conservative oriented envelopes. Geometry checks are not calibrated confidence scores.'};
+}
+
+export function detectPhoto(raster:Raster,interior:Footprint,id:string,original={width:raster.width,height:raster.height}):Analysis {
+ try{return detectRegions(raster,interior,id,original);}catch(first){
+  // Keep validation/rejection honest; retries are limited to valid, opaque, reasonably sized images.
+  if(!Number.isInteger(raster.width)||!Number.isInteger(raster.height)||raster.width<80||raster.height<80||raster.width*raster.height>1_000_000||raster.data.length!==raster.width*raster.height*4||raster.data.some((v,i)=>i%4===3&&v!==255))throw first;
+  try{const result=detectRegions(denoise(raster),interior,id,original);return {...result,method:result.method+' Median-denoising fallback used; pixel boundaries remain approximate.',items:result.items.map(i=>({...i,quality:i.quality+' Denoised boundary: verify the complete original silhouette carefully.'}))};}catch{
+   if(first instanceof Error&&/(?:background|photo edges|unambiguous empty rectangular|Fine image texture)/i.test(first.message)){
+    try{return detectScene(raster,interior,id,original);}catch(sceneError){throw sceneError;}
+   }
+   throw first;
+  }
+ }
 }

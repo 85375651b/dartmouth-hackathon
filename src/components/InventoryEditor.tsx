@@ -26,7 +26,7 @@ export function InventoryEditor({ items, onChange }: { items: Item[]; onChange: 
   const [editingId, setEditingId] = useState<ItemId | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState("");
-  // A demo reset or external deletion must not leave a stale item in the form.
+  // A session reset or external deletion must not leave a stale item in the form.
   const editingItem = items.find((item) => item.id === editingId);
   const staleEdit = editingId !== null && !editingItem;
   const knownKg = items.reduce((sum, item) => sum + (item.weightKg ?? 0), 0);
@@ -122,7 +122,7 @@ export function InventoryEditor({ items, onChange }: { items: Item[]; onChange: 
             <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={draft.fragile} onChange={(e) => setDraft({ ...draft, fragile: e.target.checked })} className="size-4 accent-brand-600" />Fragile</label>
             <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={draft.carryOn} onChange={(e) => setDraft({ ...draft, carryOn: e.target.checked })} className="size-4 accent-brand-600" />Must be in carry-on</label>
             {editingItem && <p className="text-xs text-stone-500">Measurements apply to the whole entry ({editingItem.quantity} unit{editingItem.quantity === 1 ? "" : "s"}). Existing notes and dimensions are preserved.</p>}
-            {staleEdit && <p role="alert" className="text-sm text-red-700">This item was removed or the demo was reset. Cancel to add a new item.</p>}
+            {staleEdit && <p role="alert" className="text-sm text-red-700">This item was removed or the session was cleared. Cancel to add a new item.</p>}
             <div className="flex flex-wrap gap-2 border-t border-stone-100 pt-4">
               <button disabled={staleEdit} type="submit" className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:opacity-50">{editingId ? "Save changes" : "Add Item"}</button>
               {editingId && <button type="button" onClick={() => { reset(); setStatus("Editing canceled. No changes saved."); }} className={buttonClass}>Cancel</button>}
@@ -160,7 +160,7 @@ export function InventoryEditor({ items, onChange }: { items: Item[]; onChange: 
         </div>
       </div>
       <p role="status" className="mt-2 min-h-5 text-sm text-brand-700">{status}</p>
-      <p className="text-xs text-stone-500">Changes are kept in this tab only. Refreshing restores the demo. New items remain unassigned to suitcases and room zones.</p>
+      <p className="text-xs text-stone-500">Changes stay in this tab only. Refreshing starts an empty session. New entries can be explicitly associated with detected photo items.</p>
     </section>
   );
 }

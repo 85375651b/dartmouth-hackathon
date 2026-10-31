@@ -39,5 +39,5 @@ export function formatMeasurementNumber(value: number, minimumFractionDigits = 0
 export const formatKg = (kg: Kilograms | null) => kg === null ? "Weight unknown" : `${formatMeasurementNumber(kg, 1)} kg`;
 export const formatLiters = (liters: Liters | null) => liters === null ? "Volume unknown" : `${formatMeasurementNumber(liters, 1)} L`;
 export const formatCm = (cm: Centimeters) => `${round1(cm)} cm`;
-export const formatDimensions = (d: DimensionsCm) =>
+export const formatDimensions = (d: DimensionsCm | null) => d === null ? "Exterior dimensions unknown" :
   `${round1(d.lengthCm)} × ${round1(d.widthCm)} × ${round1(d.heightCm)} cm`;

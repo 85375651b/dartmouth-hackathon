@@ -2,36 +2,30 @@
 
 /**
  * In-memory PackWise state. Lives only in the browser tab: a page reload
- * resets to the demo data. No localStorage, server, or database.
+ * starts an empty session. No localStorage, server, or database.
  */
 import { createContext, useContext, useMemo, useReducer, useCallback, type ReactNode } from "react";
-import { createDemoData } from "@/lib/demo-data";
+import { createEmptyData } from "@/lib/empty-data";
 import { applyTripSettings, type TripSettingsDraft } from "@/lib/trip-settings";
 import { applyAreaPlan } from "@/lib/photo-packing/plan";
+import type { FlightLookup } from "@/lib/flights/types";
 import type { AreaPlan } from "@/lib/photo-packing/types";
-import { saveRoomZone, setRoomZoneConfirmation, removeRoomZone, type RoomZoneDraft } from "@/lib/room-zones";
-import type { Item, ItemId, PackWiseData, RoomZoneId, SuitcaseId } from "@/lib/types";
+import type { Item, ItemId, PackWiseData, SuitcaseId } from "@/lib/types";
 
 export type PackWiseAction =
+  | { type: "setFlightLookup"; lookup: FlightLookup | undefined }
   | { type: "applyAreaPlan"; plan: AreaPlan }
+  | { type: "clearAreaPlan"; suitcaseId: SuitcaseId }
   | { type: "setItems"; items: Item[] }
-  | { type: "saveRoomZone"; draft: RoomZoneDraft; id: RoomZoneId; creating: boolean }
-  | { type: "confirmRoomZone"; id: RoomZoneId; confirmed: boolean }
-  | { type: "removeRoomZone"; id: RoomZoneId }
   | { type: "saveTripSettings"; draft: TripSettingsDraft }
   | { type: "assignItemToSuitcase"; itemId: ItemId; suitcaseId: SuitcaseId }
-  | { type: "assignItemToZone"; itemId: ItemId; roomZoneId: RoomZoneId }
-  | { type: "resetDemo" };
+  | { type: "resetSession" };
 
 export function packWiseReducer(state: PackWiseData, action: PackWiseAction): PackWiseData {
   switch (action.type) {
+    case "setFlightLookup": return {...state,flightLookup:action.lookup};
     case "applyAreaPlan": return applyAreaPlan(state, action.plan);
-    case "saveRoomZone":
-      return saveRoomZone(state, action.draft, action.id, action.creating);
-    case "confirmRoomZone":
-      return setRoomZoneConfirmation(state, action.id, action.confirmed);
-    case "removeRoomZone":
-      return removeRoomZone(state, action.id);
+    case "clearAreaPlan": return {...state,packingPlan:{...state.packingPlan,areaPlans:state.packingPlan.areaPlans?.filter(p=>p.suitcaseId!==action.suitcaseId)}};
     case "saveTripSettings":
       return applyTripSettings(state, action.draft);
     case "setItems": {
@@ -73,21 +67,8 @@ export function packWiseReducer(state: PackWiseData, action: PackWiseAction): Pa
         },
       };
     }
-    case "assignItemToZone": {
-      const { itemId, roomZoneId } = action;
-      const others = state.unpackingPlan.assignments.filter((a) => a.itemId !== itemId);
-      const unpackOrder = 1 + Math.max(0, ...others.map((a) => a.unpackOrder));
-      return {
-        ...state,
-        unpackingPlan: {
-          ...state.unpackingPlan,
-          assignments: [...others, { itemId, roomZoneId, unpackOrder }],
-          unassignedItemIds: state.unpackingPlan.unassignedItemIds.filter((id) => id !== itemId),
-        },
-      };
-    }
-    case "resetDemo":
-      return createDemoData();
+    case "resetSession":
+      return createEmptyData();
   }
 }
 
@@ -100,11 +81,11 @@ interface PackWiseContextValue {
 const PackWiseContext = createContext<PackWiseContextValue | null>(null);
 
 export function PackWiseProvider({ children }: { children: ReactNode }) {
-  const [data, rawDispatch] = useReducer(packWiseReducer, undefined, createDemoData);
+  const [data, rawDispatch] = useReducer(packWiseReducer, undefined, createEmptyData);
   const [resetVersion, bumpResetVersion] = useReducer((value: number) => value + 1, 0);
   const dispatch = useCallback((action: PackWiseAction) => {
     rawDispatch(action);
-    if (action.type === "resetDemo") bumpResetVersion();
+    if (action.type === "resetSession") bumpResetVersion();
   }, []);
   const value = useMemo(() => ({ data, dispatch, resetVersion }), [data, dispatch, resetVersion]);
   return <PackWiseContext.Provider value={value}>{children}</PackWiseContext.Provider>;

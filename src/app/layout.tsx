@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PackWise — From packed to placed.",
-  description: "Plan what goes in each suitcase and where it lands in your new room.",
+  title: "ClaudePack — Less guesswork. More getaway.",
+  description: "Turn a packing photo into a step-by-step getaway.",
 };
 
 export const viewport: Viewport = {

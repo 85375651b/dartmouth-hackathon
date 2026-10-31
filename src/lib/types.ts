@@ -109,7 +109,7 @@ export interface Trip {
   flight?: FlightDetails;
   /** ISO 8601 date, e.g. "2027-01-08"; blank when unknown. */
   departureDate: string;
-  durationDays: number;
+  durationDays: number | null;
   itemIds: ItemId[];
   suitcaseIds: SuitcaseId[];
   roomZoneIds: RoomZoneId[];
@@ -153,19 +153,19 @@ export interface Item {
   notes?: string;
 }
 
-export type SuitcaseKind = "checked" | "carry-on";
+export type SuitcaseKind = "checked" | "carry-on" | "unknown";
 
 export interface Suitcase {
   id: SuitcaseId;
   name: string;
   kind: SuitcaseKind;
   /** User's approximate weight of the empty suitcase. */
-  emptyWeightKg: Kilograms;
+  emptyWeightKg: Kilograms | null;
   /** Manually entered total weight limit including contents; not verified policy. */
-  maxWeightKg: Kilograms;
+  maxWeightKg: Kilograms | null;
   /** Stored estimate of usable interior volume; not an airline allowance. */
-  capacityLiters: Liters;
-  dimensionsCm: DimensionsCm;
+  capacityLiters: Liters | null;
+  dimensionsCm: DimensionsCm | null;
   /** Explicit user-reviewed usable interior; separate from the visible exterior. */
   interiorFootprintCm?: { lengthCm: number; widthCm: number };
 }
@@ -240,6 +240,7 @@ export interface UnpackingPlan {
 
 /** Everything the app holds in browser memory for one trip. */
 export interface PackWiseData {
+  flightLookup?: import("./flights/types.ts").FlightLookup;
   trip: Trip;
   items: Item[];
   suitcases: Suitcase[];

@@ -13,7 +13,8 @@ import { boxVolumeLiters, fitsWithin } from "../units.ts";
 export type PackingOptimizationInput = Pick<PackWiseData, "trip" | "items" | "suitcases" | "packingPlan">;
 
 type MeasuredItem = Item & { weightKg: number; volumeLiters: number; dimensionsCm: DimensionsCm };
-type MeasuredPackingInput = Omit<PackingOptimizationInput, "items"> & { items: MeasuredItem[] };
+type MeasuredSuitcase = Suitcase & { emptyWeightKg:number; maxWeightKg:number; capacityLiters:number; dimensionsCm:DimensionsCm };
+type MeasuredPackingInput = Omit<PackingOptimizationInput, "items" | "suitcases"> & { items: MeasuredItem[]; suitcases:MeasuredSuitcase[] };
 
 export type PackingRejectionReason = "carry-on-required" | "dimensions" | "weight" | "volume";
 
@@ -34,7 +35,7 @@ export interface PackingOptimizationResult {
 }
 
 interface BagState {
-  suitcase: Suitcase;
+  suitcase: MeasuredSuitcase;
   items: MeasuredItem[];
   contentsWeightKg: number;
   usedLiters: number;
@@ -170,7 +171,7 @@ function validateInput(data: PackingOptimizationInput): asserts data is Measured
   }
   for (const bag of data.suitcases) {
     if (![bag.maxWeightKg, bag.capacityLiters].every(positiveFinite) || !validDimensions(bag.dimensionsCm)
-      || !Number.isFinite(bag.emptyWeightKg) || bag.emptyWeightKg < 0 || bag.emptyWeightKg > bag.maxWeightKg) {
+      || bag.emptyWeightKg === null || bag.maxWeightKg === null || !Number.isFinite(bag.emptyWeightKg) || bag.emptyWeightKg < 0 || bag.emptyWeightKg > bag.maxWeightKg) {
       throw new Error(`Suitcase "${bag.id}" needs positive finite limits and dimensions, and an empty weight between zero and its total weight limit.`);
     }
     if (bag.kind !== "checked" && bag.kind !== "carry-on") throw new Error(`Suitcase "${bag.id}" needs a valid kind.`);

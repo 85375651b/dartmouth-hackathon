@@ -1,0 +1,1 @@
+export async function GET(){return Response.json({recognition:!!process.env.ANTHROPIC_API_KEY,flights:!!process.env.AVIATIONSTACK_API_KEY,policySearch:!!process.env.TAVILY_API_KEY&&!!process.env.ANTHROPIC_API_KEY},{headers:{'Cache-Control':'no-store'}});}

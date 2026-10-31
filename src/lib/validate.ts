@@ -82,7 +82,7 @@ export function validatePackWiseData(data: PackWiseData): ValidationResult {
       if (item.carryOnRequired && suitcase.kind !== "carry-on") {
         errors.push(`Item "${item.id}" must travel in a carry-on, not "${suitcase.id}".`);
       }
-      if (item.dimensionsCm && !fitsWithin(item.dimensionsCm, suitcase.dimensionsCm)) {
+      if (item.dimensionsCm && suitcase.dimensionsCm && !fitsWithin(item.dimensionsCm, suitcase.dimensionsCm)) {
         errors.push(`Item "${item.id}" does not fit inside "${suitcase.id}".`);
       }
     }
@@ -98,7 +98,7 @@ export function validatePackWiseData(data: PackWiseData): ValidationResult {
   }
   for (const load of suitcaseLoads(data)) {
     if (load.overWeight) {
-      errors.push(`"${load.suitcase.id}" weighs ${load.totalWeightKg} kg; limit is ${load.suitcase.maxWeightKg} kg.`);
+      errors.push(load.totalWeightKg === null ? `"${load.suitcase.id}" known weights exceed its ${load.suitcase.maxWeightKg} kg limit; the complete loaded weight is unknown.` : `"${load.suitcase.id}" weighs ${load.totalWeightKg} kg; limit is ${load.suitcase.maxWeightKg} kg.`);
     }
     if (load.overVolume) {
       errors.push(`"${load.suitcase.id}" holds ${load.usedLiters} L; capacity is ${load.suitcase.capacityLiters} L.`);

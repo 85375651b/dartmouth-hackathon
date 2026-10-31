@@ -28,18 +28,18 @@ export function SuitcaseCard({ load, suitcases }: SuitcaseCardProps) {
         {items.some((item) => item.weightKg === null || item.volumeLiters === null) && (
           <p className="text-xs text-amber-800">Some measurements are unknown. Meters show known amounts only.</p>
         )}
-        <Meter
+        {load.totalWeightKg!==null&&suitcase.maxWeightKg!==null?<Meter
           label="Weight incl. suitcase"
           value={load.totalWeightKg}
           max={suitcase.maxWeightKg}
           valueText={`${formatKg(load.totalWeightKg)} / ${formatKg(suitcase.maxWeightKg)}`}
-        />
-        <Meter
+        />:<p className="text-xs">Loaded weight or limit unknown.</p>}
+        {suitcase.capacityLiters!==null?<Meter
           label="Volume (stored estimate)"
           value={load.usedLiters}
           max={suitcase.capacityLiters}
           valueText={`${formatLiters(load.usedLiters)} / ${formatLiters(suitcase.capacityLiters)}`}
-        />
+        />:<p className="text-xs">Stored capacity unknown.</p>}
       </div>
 
       <p className="mt-2 text-xs text-stone-500">Volume uses existing stored/demo estimates, not a user-confirmed capacity or airline allowance. It does not guarantee physical fit.</p>

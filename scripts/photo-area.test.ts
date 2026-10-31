@@ -39,7 +39,7 @@ test('missing interior/items, crop, clutter, low contrast and mismatched geometr
  r=fixture();rect(r,380,80,570,310,[245,245,245]);assert.throws(()=>detectPhoto(r,base,'x'),/No separate items/);
  r=fixture();rect(r,600,80,640,130,[40,40,40]);assert.throws(()=>detectPhoto(r,base,'x'),/crop/);
  assert.throws(()=>detectPhoto(fixture(),{lengthCm:10,widthCm:10},'x'),/interior/);
- r=fixture();rect(r,0,0,640,10,[0,0,0]);assert.throws(()=>detectPhoto(r,base,'x'),/cluttered/);
+ r=fixture();rect(r,0,0,640,10,[0,0,0]);assert.equal(detectPhoto(r,base,'x').items.length,3,'a background edge band must not reject otherwise measurable objects');
  r=fixture();rect(r,40,90,340,270,[150,150,155]);assert.throws(()=>detectPhoto(r,base,'x'),/interior/);
 });
 test('merged/fragmented regions and multiple possible interiors reject',()=>{

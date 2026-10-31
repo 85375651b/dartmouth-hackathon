@@ -19,7 +19,7 @@ create a second project folder or scaffold an application until requested.
   an existing server when available; otherwise start it using the documented
   command and report the URL. Local development uses live reload, not a Git
   push or public deployment.
-- The app is PackWise: Next.js (App Router), TypeScript, and Tailwind CSS in the
+- The app is ClaudePack (formerly PackWise): Next.js (App Router), TypeScript, and Tailwind CSS in the
   repository root. Do not create another project folder. Setup, development,
   and verification commands are documented in `README.md`; run `npm run check`
   before handing off changes.

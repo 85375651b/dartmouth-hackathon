@@ -15,7 +15,7 @@ export interface TripSettingsDraft {
 export function createTripSettingsDraft(data: PackWiseData): TripSettingsDraft {
   return {
     destination: data.trip.destination,
-    durationDays: String(data.trip.durationDays),
+    durationDays: String(data.trip.durationDays ?? ""),
     departureDate: data.trip.departureDate,
     flight: {
       detailsKnown: data.trip.flight?.detailsKnown ?? false,
@@ -30,8 +30,8 @@ export function createTripSettingsDraft(data: PackWiseData): TripSettingsDraft {
     },
     suitcases: data.suitcases.map((bag) => ({
       id: bag.id,
-      maxWeightKg: String(bag.maxWeightKg),
-      emptyWeightKg: String(bag.emptyWeightKg),
+      maxWeightKg: String(bag.maxWeightKg ?? ""),
+      emptyWeightKg: String(bag.emptyWeightKg ?? ""),
     })),
   };
 }

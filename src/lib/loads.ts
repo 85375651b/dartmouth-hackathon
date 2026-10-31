@@ -19,10 +19,10 @@ export interface SuitcaseLoad {
   items: Item[];
   contentsWeightKg: Kilograms;
   /** Contents plus the empty suitcase; compare with `maxWeightKg`. */
-  totalWeightKg: Kilograms;
+  totalWeightKg: Kilograms | null;
   usedLiters: Liters;
-  overWeight: boolean;
-  overVolume: boolean;
+  overWeight: boolean | null;
+  overVolume: boolean | null;
 }
 
 export function suitcaseLoads(data: PackWiseData): SuitcaseLoad[] {
@@ -34,7 +34,7 @@ export function suitcaseLoads(data: PackWiseData): SuitcaseLoad[] {
       .map((a) => items.get(a.itemId))
       .filter((item): item is Item => item !== undefined);
     const contentsWeightKg = sum(packed, (i) => i.weightKg ?? 0);
-    const totalWeightKg = contentsWeightKg + suitcase.emptyWeightKg;
+    const totalWeightKg = suitcase.emptyWeightKg === null || packed.some(i=>i.weightKg===null) ? null : contentsWeightKg + suitcase.emptyWeightKg;
     const usedLiters = sum(packed, (i) => i.volumeLiters ?? 0);
     return {
       suitcase,
@@ -43,8 +43,8 @@ export function suitcaseLoads(data: PackWiseData): SuitcaseLoad[] {
       totalWeightKg,
       usedLiters,
       // Compare unrounded totals so decimal limits cannot hide an overload.
-      overWeight: totalWeightKg > suitcase.maxWeightKg + 1e-9,
-      overVolume: usedLiters > suitcase.capacityLiters + 1e-9,
+      overWeight: suitcase.maxWeightKg === null ? null : (contentsWeightKg + (suitcase.emptyWeightKg ?? 0)) > suitcase.maxWeightKg + 1e-9 ? true : totalWeightKg === null ? null : false,
+      overVolume: suitcase.capacityLiters === null ? null : usedLiters > suitcase.capacityLiters + 1e-9 ? true : packed.some(i=>i.volumeLiters===null) ? null : false,
     };
   });
 }
