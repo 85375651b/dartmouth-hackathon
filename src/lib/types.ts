@@ -126,7 +126,10 @@ export type ItemCategory =
   | "linens"
   | "kitchen"
   | "study"
-  | "personal";
+  | "personal"
+  | "other";
+
+export type Cleanliness = "clean" | "dirty" | "protected";
 
 /** How an item tolerates being packed. */
 export type Fragility = "sturdy" | "normal" | "fragile";
@@ -135,16 +138,18 @@ export interface Item {
   id: ItemId;
   name: string;
   category: ItemCategory;
-  /** Weight of all units together. */
-  weightKg: Kilograms;
-  /** Packed volume of all units together. */
-  volumeLiters: Liters;
-  /** Packed bounding box of the whole entry (all units bundled together). */
-  dimensionsCm: DimensionsCm;
+  /** Weight of all units together; null until confirmed (zero is valid). */
+  weightKg: Kilograms | null;
+  /** Packed volume of all units together; null until confirmed. */
+  volumeLiters: Liters | null;
+  /** Packed bounding box of the whole entry; null until measured. */
+  dimensionsCm: DimensionsCm | null;
   quantity: number;
   fragility: Fragility;
   /** Should travel in the carry-on (documents, valuables, batteries). */
   carryOnRequired: boolean;
+  /** Absent on legacy demo entries; treated as clean by the editor. */
+  cleanliness?: Cleanliness;
   notes?: string;
 }
 

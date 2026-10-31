@@ -4,7 +4,7 @@ export const ZONE_KINDS: Record<RoomZoneKind, string> = {
   closet: "Wardrobe / closet", dresser: "Dresser", desk: "Desk", shelf: "Shelf",
   drawer: "Drawer", "under-bed": "Under-bed storage", bathroom: "Bathroom storage", other: "Other storage",
 };
-export const ITEM_CATEGORIES: ItemCategory[] = ["clothing", "shoes", "toiletries", "electronics", "documents", "linens", "kitchen", "study", "personal"];
+export const ITEM_CATEGORIES: ItemCategory[] = ["clothing", "shoes", "toiletries", "electronics", "documents", "linens", "kitchen", "study", "personal", "other"];
 
 export function isRoomZoneKind(value: string): value is RoomZoneKind {
   return Object.hasOwn(ZONE_KINDS, value);

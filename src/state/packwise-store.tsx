@@ -8,9 +8,10 @@ import { createContext, useContext, useMemo, useReducer, useCallback, type React
 import { createDemoData } from "@/lib/demo-data";
 import { applyTripSettings, type TripSettingsDraft } from "@/lib/trip-settings";
 import { saveRoomZone, setRoomZoneConfirmation, removeRoomZone, type RoomZoneDraft } from "@/lib/room-zones";
-import type { ItemId, PackWiseData, RoomZoneId, SuitcaseId } from "@/lib/types";
+import type { Item, ItemId, PackWiseData, RoomZoneId, SuitcaseId } from "@/lib/types";
 
 export type PackWiseAction =
+  | { type: "setItems"; items: Item[] }
   | { type: "saveRoomZone"; draft: RoomZoneDraft; id: RoomZoneId; creating: boolean }
   | { type: "confirmRoomZone"; id: RoomZoneId; confirmed: boolean }
   | { type: "removeRoomZone"; id: RoomZoneId }
@@ -29,6 +30,32 @@ export function packWiseReducer(state: PackWiseData, action: PackWiseAction): Pa
       return removeRoomZone(state, action.id);
     case "saveTripSettings":
       return applyTripSettings(state, action.draft);
+    case "setItems": {
+      const ids = new Set(action.items.map((item) => item.id));
+      // Keep existing assignments unless deleted or now incompatible with carry-on rules.
+      const packingAssignments = state.packingPlan.assignments.filter((assignment) => {
+        const item = action.items.find((item) => item.id === assignment.itemId);
+        return item && (!item.carryOnRequired || state.suitcases.some(
+          (suitcase) => suitcase.id === assignment.suitcaseId && suitcase.kind === "carry-on",
+        ));
+      });
+      const unpackingAssignments = state.unpackingPlan.assignments.filter((a) => ids.has(a.itemId));
+      return {
+        ...state,
+        items: action.items,
+        trip: { ...state.trip, itemIds: [...ids] },
+        packingPlan: {
+          ...state.packingPlan,
+          assignments: packingAssignments,
+          unassignedItemIds: [...ids].filter((id) => !packingAssignments.some((a) => a.itemId === id)),
+        },
+        unpackingPlan: {
+          ...state.unpackingPlan,
+          assignments: unpackingAssignments,
+          unassignedItemIds: [...ids].filter((id) => !unpackingAssignments.some((a) => a.itemId === id)),
+        },
+      };
+    }
     case "assignItemToSuitcase": {
       const { itemId, suitcaseId } = action;
       const others = state.packingPlan.assignments.filter((a) => a.itemId !== itemId);

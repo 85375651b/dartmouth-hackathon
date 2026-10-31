@@ -19,11 +19,25 @@ export function fitsWithin(inner: DimensionsCm, outer: DimensionsCm): boolean {
 
 /** Rounds to one decimal place to avoid floating-point noise in sums. */
 export function round1(value: number): number {
+  // Multiplying a large finite value by ten can overflow. At this magnitude
+  // a JavaScript number already has less than one decimal place of precision.
+  if (Math.abs(value) >= 1e15) return value;
   return Math.round(value * 10) / 10;
 }
 
-export const formatKg = (kg: Kilograms) => `${round1(kg).toFixed(1)} kg`;
-export const formatLiters = (liters: Liters) => `${round1(liters).toFixed(1)} L`;
+/** Keep positive measurements visibly distinct from zero, without giant strings. */
+export function formatMeasurementNumber(value: number, minimumFractionDigits = 0): string {
+  if (!Number.isFinite(value)) return "Out of range";
+  const magnitude = Math.abs(value);
+  return new Intl.NumberFormat("en-US", {
+    notation: magnitude !== 0 && (magnitude < 1e-6 || magnitude >= 1e9) ? "scientific" : "standard",
+    minimumFractionDigits,
+    maximumFractionDigits: 6,
+  }).format(value);
+}
+
+export const formatKg = (kg: Kilograms | null) => kg === null ? "Weight unknown" : `${formatMeasurementNumber(kg, 1)} kg`;
+export const formatLiters = (liters: Liters | null) => liters === null ? "Volume unknown" : `${formatMeasurementNumber(liters, 1)} L`;
 export const formatCm = (cm: Centimeters) => `${round1(cm)} cm`;
 export const formatDimensions = (d: DimensionsCm) =>
   `${round1(d.lengthCm)} × ${round1(d.widthCm)} × ${round1(d.heightCm)} cm`;

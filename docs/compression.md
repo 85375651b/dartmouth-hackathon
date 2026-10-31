@@ -146,7 +146,7 @@ retailer proxy, not a measured result for that object or a fit guarantee.
 T06 can fetch an estimate and show its source/warnings for user review. This
 change does not overwrite `Item.volumeLiters` (already packed volume), alter
 dimensions, multiply quantities again, or update suitcase/room loads. Applying
-the estimate belongs to the future T06 flow. There is no inventory UI yet.
+the estimate belongs to the future T06 flow. The T05 inventory editor is now available; compression estimates are not applied automatically.
 
 ## Verification
 

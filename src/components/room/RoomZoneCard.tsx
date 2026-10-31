@@ -20,6 +20,9 @@ export function RoomZoneCard({ load, onEdit, onRemove, onConfirm }: {
       <p className="mt-1 text-xs text-stone-600">{zone.dimensionsCm ? `Interior: ${formatDimensions(zone.dimensionsCm)}` : "Dimensions unknown"}</p>
       <p className="mt-1 text-xs text-stone-600">{zone.suitableCategories.length ? `Category preferences: ${zone.suitableCategories.join(", ")}` : "No category preference"}</p>
       <div className="mt-3">
+        {items.some((item) => item.volumeLiters === null) && (
+          <p className="mb-2 text-xs text-amber-800">Some volumes are unknown. Space used is incomplete; fit has not been established.</p>
+        )}
         {zone.capacityLiters === null ? <p className="text-sm">Capacity unknown · {formatLiters(load.usedLiters)} assigned. Fit has not been checked.</p> : <Meter
           label="Estimated space used" value={load.usedLiters} max={zone.capacityLiters}
           valueText={`${formatLiters(load.usedLiters)} / ${formatLiters(zone.capacityLiters)}`} />}

@@ -7,6 +7,21 @@ import { validatePackWiseData } from "../src/lib/validate.ts";
 
 function blankDraft(): RoomZoneDraft { return { ...roomZoneDraft(), name: "Desk drawer", kind: "drawer" }; }
 
+test("merged inventory supports unknown assigned volumes and the Other category", () => {
+  const data = createDemoData();
+  const assignment = data.unpackingPlan.assignments.find(a => a.roomZoneId === data.roomZones[0].id)!;
+  const item = data.items.find(item => item.id === assignment.itemId)!;
+  item.volumeLiters = null;
+  item.category = "other";
+  assert.equal(roomZoneLoads(data)[0].overVolume, null);
+  data.roomZones[0].capacityLiters = 0.01;
+  assert.equal(roomZoneLoads(data)[0].overVolume, true);
+  assert.deepEqual(validateRoomZoneDraft({ ...blankDraft(), suitableCategories: ["other"] }), {});
+  const removed = removeRoomZone(data, data.roomZones[0].id);
+  assert.ok(removed.unpackingPlan.unassignedItemIds.includes(item.id));
+  assert.equal(removed.items.find(entry => entry.id === item.id)?.volumeLiters, null);
+});
+
 test("unique IDs, unknown measurements and same-name zones are supported", () => {
   const data = createDemoData();
   const first = newRoomZoneId();

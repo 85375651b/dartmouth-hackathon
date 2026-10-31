@@ -25,6 +25,9 @@ export function SuitcaseCard({ load, suitcases }: SuitcaseCardProps) {
       </header>
 
       <div className="mt-4 space-y-3">
+        {items.some((item) => item.weightKg === null || item.volumeLiters === null) && (
+          <p className="text-xs text-amber-800">Some measurements are unknown. Meters show known amounts only.</p>
+        )}
         <Meter
           label="Weight incl. suitcase"
           value={load.totalWeightKg}

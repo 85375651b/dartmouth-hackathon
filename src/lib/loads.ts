@@ -33,9 +33,9 @@ export function suitcaseLoads(data: PackWiseData): SuitcaseLoad[] {
       .sort((a, b) => a.packOrder - b.packOrder)
       .map((a) => items.get(a.itemId))
       .filter((item): item is Item => item !== undefined);
-    const contentsWeightKg = sum(packed, (i) => i.weightKg);
+    const contentsWeightKg = sum(packed, (i) => i.weightKg ?? 0);
     const totalWeightKg = contentsWeightKg + suitcase.emptyWeightKg;
-    const usedLiters = sum(packed, (i) => i.volumeLiters);
+    const usedLiters = sum(packed, (i) => i.volumeLiters ?? 0);
     return {
       suitcase,
       items: packed,
@@ -54,7 +54,7 @@ export interface RoomZoneLoad {
   /** Items in unpack order. */
   items: Item[];
   usedLiters: Liters;
-  /** null means capacity is unknown, not a feasible or unlimited zone. */
+  /** null means capacity or assigned volumes are unknown; fit is not established. */
   overVolume: boolean | null;
   categoryMismatches: Item[];
   needsConfirmation: boolean;
@@ -68,10 +68,12 @@ export function roomZoneLoads(data: PackWiseData): RoomZoneLoad[] {
       .sort((a, b) => a.unpackOrder - b.unpackOrder)
       .map((a) => items.get(a.itemId))
       .filter((item): item is Item => item !== undefined);
-    const usedLiters = sum(placed, (i) => i.volumeLiters);
+    const usedLiters = sum(placed, (i) => i.volumeLiters ?? 0);
     return {
       zone, items: placed, usedLiters,
-      overVolume: zone.capacityLiters === null ? null : usedLiters > zone.capacityLiters + 1e-9,
+      overVolume: zone.capacityLiters === null ? null
+        : usedLiters > zone.capacityLiters + 1e-9 ? true
+        : placed.some((item) => item.volumeLiters === null) ? null : false,
       categoryMismatches: zone.suitableCategories.length ? placed.filter((item) => !zone.suitableCategories.includes(item.category)) : [],
       needsConfirmation: !zone.confirmed,
     };
