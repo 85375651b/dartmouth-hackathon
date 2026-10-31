@@ -45,6 +45,8 @@ This runs, in order (each is also available on its own):
 To preview the production build locally: `npm run build && npm start`, then open
 <http://localhost:3000>. Run focused trip-settings tests with
 `node --experimental-strip-types --test scripts/trip-settings.test.ts`.
+Run focused optimizer tests with
+`node --experimental-strip-types --test scripts/packing-optimizer.test.ts`.
 There is no linter yet.
 
 ### What exists
@@ -69,6 +71,32 @@ There is no linter yet.
   browser memory only. Reloading the page resets to the demo data.
 - **Load and validation logic** (`src/lib/loads.ts`, `src/lib/validate.ts`):
   pure functions usable from the UI and from Node scripts.
+- **Packing optimizer (T06)** (`src/lib/packing/optimize-packing.ts`): a pure,
+  deterministic function; not yet wired to the dashboard or store.
+
+### Packing optimizer
+
+Call `optimizePacking(data)` with the current trip, items, suitcases, and packing
+plan (the full `PackWiseData` object is accepted). It returns `packingPlan` and
+`unassignedItems`, with one message and per-suitcase rejection reasons for each
+unassigned item. It keeps the existing plan and trip IDs and changes no input.
+Applying the returned plan to browser state is a separate integration step.
+
+Required carry-on entries are considered first, then entries that fit in fewer
+empty bags, then descending volume, descending weight, and ordinal item ID.
+Optional entries try checked bags before carry-ons, with suitcase IDs breaking
+ties. Each whole entry is assigned once or explicitly left unassigned. Stored
+weight and volume already include its quantity; they are not multiplied again.
+Assignments respect total weight including the empty bag, stored estimated
+capacity, carry-on requirements, and individual dimensional fit with rotation.
+Per-bag `packOrder` follows placement order; no T07 stacking rules are applied.
+
+Malformed source IDs, trip membership, physical values, or plan identity throw
+an error. Old assignments are ignored so replanning can repair an overloaded or
+invalid assignment. The greedy pass may leave an item unassigned even if a
+different arrangement would work. Estimated liters and individual dimension
+checks do not guarantee simultaneous physical fit. Notes, fragility, categories,
+and unverified flight details do not add baggage rules; AI is not used.
 
 ### Edit trip settings
 
@@ -97,7 +125,7 @@ references, passport details, or card numbers. Reloading or **Reset demo** resto
 all sample settings and clears drafts; there is no persistence.
 
 Not included yet: login, database or persistence, 3D graphics, AI features,
-automatic packing, or editing inventory items and room zones in the UI.
+automatic packing controls, or editing inventory items and room zones in the UI.
 
 ### File layout and suggested ownership
 
