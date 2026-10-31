@@ -1,6 +1,7 @@
 import { indexById, roomZoneLoads, suitcaseLoads } from "./loads.ts";
 import type { PackWiseData } from "./types.ts";
 import { boxVolumeLiters, fitsWithin } from "./units.ts";
+import { roomZoneDraft, validateRoomZoneDraft } from "./room-zones.ts";
 
 export interface ValidationResult {
   /** Broken data: dangling IDs, duplicates, impossible values, over-limit plans. */
@@ -38,6 +39,12 @@ export function validatePackWiseData(data: PackWiseData): ValidationResult {
   for (const id of trip.itemIds) if (!itemsById.has(id)) errors.push(`Trip lists unknown item "${id}".`);
   for (const id of trip.suitcaseIds) if (!suitcasesById.has(id)) errors.push(`Trip lists unknown suitcase "${id}".`);
   for (const id of trip.roomZoneIds) if (!zonesById.has(id)) errors.push(`Trip lists unknown room zone "${id}".`);
+  if (new Set(trip.roomZoneIds).size !== trip.roomZoneIds.length || roomZones.some((zone) => !trip.roomZoneIds.includes(zone.id))) {
+    errors.push("Trip room-zone IDs must match the room-zone collection without duplicates.");
+  }
+  for (const zone of roomZones) {
+    for (const message of Object.values(validateRoomZoneDraft(roomZoneDraft(zone)))) errors.push(`Zone "${zone.id}": ${message}`);
+  }
 
   // Physical values
   for (const item of items) {
@@ -104,7 +111,7 @@ export function validatePackWiseData(data: PackWiseData): ValidationResult {
     if (placed.has(a.itemId)) errors.push(`Item "${a.itemId}" is placed more than once.`);
     placed.add(a.itemId);
     if (item && !packed.has(item.id)) warnings.push(`Item "${item.id}" is placed in the room but never packed.`);
-    if (item && zone && !zone.suitableCategories.includes(item.category)) {
+    if (item && zone && zone.suitableCategories.length > 0 && !zone.suitableCategories.includes(item.category)) {
       warnings.push(`Item "${item.id}" (${item.category}) is placed in "${zone.id}", which is not meant for that category.`);
     }
   }
@@ -113,6 +120,8 @@ export function validatePackWiseData(data: PackWiseData): ValidationResult {
     if (placed.has(id)) errors.push(`Item "${id}" is both placed and unassigned.`);
   }
   for (const load of roomZoneLoads(data)) {
+    if (load.items.length && load.needsConfirmation) warnings.push(`"${load.zone.id}" has assignments requiring availability confirmation.`);
+    if (load.items.length && load.overVolume === null) warnings.push(`"${load.zone.id}" has unknown capacity; fit has not been checked.`);
     if (load.overVolume) {
       errors.push(`"${load.zone.id}" holds ${load.usedLiters} L; capacity is ${load.zone.capacityLiters} L.`);
     }

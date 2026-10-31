@@ -30,6 +30,47 @@ export type UnpackingPlanId = `unpack-${string}`;
 export type Kilograms = number;
 /** Volume in liters. */
 export type Liters = number;
+
+/** Explicit compressible material: insulation fill, or fabric for an unfilled blanket. */
+export type FillMaterial = "down" | "synthetic" | "wool" | "cotton";
+export type CompressibleObjectKind = "puffer-jacket" | "pillow" | "sleeping-bag" | "blanket";
+export type CompressionReferenceId = `compression-${string}`;
+
+export interface CompressionRequest {
+  itemId: ItemId;
+  objectKind: CompressibleObjectKind;
+  /** Blanket fabric or actual filling; a reference's cover never establishes a match. */
+  fillMaterial: FillMaterial;
+  /** Whole entry, all units together; never an already-packed Item.volumeLiters. */
+  uncompressedVolumeLiters: Liters;
+}
+
+export interface CompressionReference {
+  id: CompressionReferenceId;
+  listingName: string;
+  variant: string;
+  sourceUrl: string;
+  retrievedAt: string;
+  fillMaterial: FillMaterial;
+  baselineKind: "uncompressed" | "stuff-sack-proxy";
+  baselineVolumeLiters: Liters;
+  compressedVolumeLiters: Liters;
+  /** Omitted on legacy sleeping-bag references. */
+  productKind?: "sleeping-bag" | "pillow" | "mattress";
+  /** Original retailer text supporting new bedding measurements. */
+  measurementEvidence?: { material: string; baseline: string; compressed: string };
+}
+
+export type CompressionResult =
+  | {
+      status: "estimated";
+      itemId: ItemId;
+      referenceId: CompressionReferenceId;
+      ratio: number;
+      compressedVolumeLiters: Liters;
+      warnings: string[];
+    }
+  | { status: "unavailable"; itemId: ItemId; reason: string };
 /** Length in centimeters. */
 export type Centimeters = number;
 
@@ -127,6 +168,8 @@ export type RoomZoneKind =
   | "dresser"
   | "desk"
   | "shelf"
+  | "drawer"
+  | "other"
   | "under-bed"
   | "bathroom";
 
@@ -134,10 +177,15 @@ export interface RoomZone {
   id: RoomZoneId;
   name: string;
   kind: RoomZoneKind;
-  /** Usable storage volume. */
-  capacityLiters: Liters;
-  dimensionsCm: DimensionsCm;
-  /** Item categories that naturally belong here. */
+  /** User estimate of free storage; null means unknown, never unlimited. */
+  capacityLiters: Liters | null;
+  /** Interior dimensions; null means unknown. */
+  dimensionsCm: DimensionsCm | null;
+  /** Explicitly confirmed available by the current user, independent of fit. */
+  confirmed: boolean;
+  /** Retain sample provenance even after confirmation. */
+  isDemo: boolean;
+  /** Category preferences; an empty list means no preference. */
   suitableCategories: ItemCategory[];
 }
 

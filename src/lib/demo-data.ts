@@ -42,6 +42,8 @@ export const demoRoomZones: RoomZone[] = [
   {
     id: "zone-demo-closet",
     name: "Wardrobe closet",
+    confirmed: false,
+    isDemo: true,
     kind: "closet",
     capacityLiters: 300,
     dimensionsCm: { lengthCm: 100, widthCm: 60, heightCm: 200 },
@@ -50,6 +52,8 @@ export const demoRoomZones: RoomZone[] = [
   {
     id: "zone-demo-dresser",
     name: "Three-drawer dresser",
+    confirmed: false,
+    isDemo: true,
     kind: "dresser",
     capacityLiters: 120,
     dimensionsCm: { lengthCm: 80, widthCm: 45, heightCm: 75 },
@@ -58,6 +62,8 @@ export const demoRoomZones: RoomZone[] = [
   {
     id: "zone-demo-desk",
     name: "Desk and drawer",
+    confirmed: false,
+    isDemo: true,
     kind: "desk",
     capacityLiters: 40,
     dimensionsCm: { lengthCm: 120, widthCm: 60, heightCm: 75 },
@@ -66,6 +72,8 @@ export const demoRoomZones: RoomZone[] = [
   {
     id: "zone-demo-under-bed",
     name: "Under-bed storage bin",
+    confirmed: false,
+    isDemo: true,
     kind: "under-bed",
     capacityLiters: 60,
     dimensionsCm: { lengthCm: 90, widthCm: 60, heightCm: 18 },
@@ -74,6 +82,8 @@ export const demoRoomZones: RoomZone[] = [
   {
     id: "zone-demo-bathroom",
     name: "Bathroom shelf",
+    confirmed: false,
+    isDemo: true,
     kind: "bathroom",
     capacityLiters: 15,
     dimensionsCm: { lengthCm: 60, widthCm: 25, heightCm: 40 },

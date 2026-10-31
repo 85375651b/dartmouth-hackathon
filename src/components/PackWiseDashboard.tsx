@@ -1,17 +1,16 @@
 "use client";
 
-import { RoomZoneCard } from "@/components/room/RoomZoneCard";
+import { RoomStorage } from "@/components/room/RoomStorage";
 import { SuitcaseCard } from "@/components/packing/SuitcaseCard";
 import { DemoBanner } from "@/components/shared/DemoBanner";
 import { TripSummary } from "@/components/trip/TripSummary";
 import { TripSettings } from "@/components/trip/TripSettings";
-import { roomZoneLoads, suitcaseLoads } from "@/lib/loads";
+import { suitcaseLoads } from "@/lib/loads";
 import { usePackWise } from "@/state/packwise-store";
 
 export function PackWiseDashboard() {
   const { data } = usePackWise();
   const packed = suitcaseLoads(data);
-  const placed = roomZoneLoads(data);
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:py-12">
@@ -35,16 +34,7 @@ export function PackWiseDashboard() {
         </div>
       </section>
 
-      <section aria-labelledby="placed-heading">
-        <h2 id="placed-heading" className="mb-3 text-xl font-semibold">
-          Placed
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {placed.map((load) => (
-            <RoomZoneCard key={load.zone.id} load={load} />
-          ))}
-        </div>
-      </section>
+      <RoomStorage />
 
       <footer className="border-t border-stone-200 pt-4 text-xs text-stone-500">
         All measurements use kilograms (kg), liters (L), and centimeters (cm).

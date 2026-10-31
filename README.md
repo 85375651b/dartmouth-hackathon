@@ -69,6 +69,9 @@ There is no linter yet.
   browser memory only. Reloading the page resets to the demo data.
 - **Load and validation logic** (`src/lib/loads.ts`, `src/lib/validate.ts`):
   pure functions usable from the UI and from Node scripts.
+- **Compression estimator for T06**: material-matched retailer scraping and
+  `POST /api/compression`, including a wool/cotton blanket algorithm (live bedding
+  estimates need complete retailer measurements); see [contract and limitations](docs/compression.md).
 
 ### Edit trip settings
 
@@ -97,7 +100,48 @@ references, passport details, or card numbers. Reloading or **Reset demo** resto
 all sample settings and clears drafts; there is no persistence.
 
 Not included yet: login, database or persistence, 3D graphics, AI features,
-automatic packing, or editing inventory items and room zones in the UI.
+automatic packing, or editing inventory items in the UI.
+
+### Edit room storage (T12)
+
+Use **Add storage zone** under **Edit room storage**, or **Edit zone** on a card.
+Enter a name and storage type; capacity in liters and all three interior
+dimensions in centimeters are optional user estimates. Blank measurements are
+unknown, never zero or unlimited. Category checkboxes are preferences; none
+selected means no category preference. **Save zone** applies edits atomically;
+**Cancel** discards the draft. Duplicate names and types are supported.
+
+After saving, explicitly check **I confirm this storage area exists and is
+available for my items** on its card. New and demo zones start unconfirmed.
+Uncheck to withdraw confirmation. Name-only edits preserve confirmation;
+changes to type, measurements, or category preferences require reconfirmation.
+Confirmation does not prove fit or safety. Existing manual/demo assignments
+remain visible with review warnings. There is no automatic unpacking engine.
+
+**Remove zone** first shows the zone and affected assignment count. Confirming
+removal deletes zone references and moves affected items into **Unassigned room
+items**, without changing inventory or suitcase assignments. **Keep zone**
+cancels removal. **Reset demo** clears open drafts/removal prompts and restores
+all five unconfirmed sample zones. All state stays in browser memory.
+
+Shared contract: `RoomZone.capacityLiters` and `dimensionsCm` accept `null` for
+unknown values. `confirmed` records explicit availability, and `isDemo` retains
+sample provenance even after confirmation. Types add `drawer` and `other` while
+keeping existing kinds (`closet` displays as Wardrobe / closet). Room load
+`overVolume` is `null` when capacity is unknown; consumers must not interpret
+that as feasibility. Loads also expose `categoryMismatches` and
+`needsConfirmation`. `Trip.roomZoneIds` stays synchronized with saved zones.
+Demo-data validation reports five expected availability warnings, not errors.
+
+Run both focused suites:
+
+```sh
+node --experimental-strip-types --test scripts/room-zones.test.ts scripts/trip-settings.test.ts
+```
+
+Run `npm run check` for the documented full checks. If the local environment
+blocks Turbopack's build-time port binding, the verified alternative production
+build is `NEXT_TELEMETRY_DISABLED=1 npm run build -- --webpack`.
 
 ### File layout and suggested ownership
 

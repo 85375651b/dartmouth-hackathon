@@ -4,12 +4,16 @@
  * In-memory PackWise state. Lives only in the browser tab: a page reload
  * resets to the demo data. No localStorage, server, or database.
  */
-import { createContext, useContext, useMemo, useReducer, type ReactNode } from "react";
+import { createContext, useContext, useMemo, useReducer, useCallback, type ReactNode } from "react";
 import { createDemoData } from "@/lib/demo-data";
 import { applyTripSettings, type TripSettingsDraft } from "@/lib/trip-settings";
+import { saveRoomZone, setRoomZoneConfirmation, removeRoomZone, type RoomZoneDraft } from "@/lib/room-zones";
 import type { ItemId, PackWiseData, RoomZoneId, SuitcaseId } from "@/lib/types";
 
 export type PackWiseAction =
+  | { type: "saveRoomZone"; draft: RoomZoneDraft; id: RoomZoneId; creating: boolean }
+  | { type: "confirmRoomZone"; id: RoomZoneId; confirmed: boolean }
+  | { type: "removeRoomZone"; id: RoomZoneId }
   | { type: "saveTripSettings"; draft: TripSettingsDraft }
   | { type: "assignItemToSuitcase"; itemId: ItemId; suitcaseId: SuitcaseId }
   | { type: "assignItemToZone"; itemId: ItemId; roomZoneId: RoomZoneId }
@@ -17,6 +21,12 @@ export type PackWiseAction =
 
 export function packWiseReducer(state: PackWiseData, action: PackWiseAction): PackWiseData {
   switch (action.type) {
+    case "saveRoomZone":
+      return saveRoomZone(state, action.draft, action.id, action.creating);
+    case "confirmRoomZone":
+      return setRoomZoneConfirmation(state, action.id, action.confirmed);
+    case "removeRoomZone":
+      return removeRoomZone(state, action.id);
     case "saveTripSettings":
       return applyTripSettings(state, action.draft);
     case "assignItemToSuitcase": {
@@ -52,14 +62,20 @@ export function packWiseReducer(state: PackWiseData, action: PackWiseAction): Pa
 
 interface PackWiseContextValue {
   data: PackWiseData;
+  resetVersion: number;
   dispatch: (action: PackWiseAction) => void;
 }
 
 const PackWiseContext = createContext<PackWiseContextValue | null>(null);
 
 export function PackWiseProvider({ children }: { children: ReactNode }) {
-  const [data, dispatch] = useReducer(packWiseReducer, undefined, createDemoData);
-  const value = useMemo(() => ({ data, dispatch }), [data]);
+  const [data, rawDispatch] = useReducer(packWiseReducer, undefined, createDemoData);
+  const [resetVersion, bumpResetVersion] = useReducer((value: number) => value + 1, 0);
+  const dispatch = useCallback((action: PackWiseAction) => {
+    rawDispatch(action);
+    if (action.type === "resetDemo") bumpResetVersion();
+  }, []);
+  const value = useMemo(() => ({ data, dispatch, resetVersion }), [data, dispatch, resetVersion]);
   return <PackWiseContext.Provider value={value}>{children}</PackWiseContext.Provider>;
 }
 

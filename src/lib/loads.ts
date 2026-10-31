@@ -7,7 +7,6 @@ import type {
   RoomZone,
   Suitcase,
 } from "./types.ts";
-import { round1 } from "./units.ts";
 
 /** Builds an ID → entity lookup. Duplicate IDs keep the last entry. */
 export function indexById<T extends { id: string }>(entities: T[]): Map<T["id"], T> {
@@ -55,7 +54,10 @@ export interface RoomZoneLoad {
   /** Items in unpack order. */
   items: Item[];
   usedLiters: Liters;
-  overVolume: boolean;
+  /** null means capacity is unknown, not a feasible or unlimited zone. */
+  overVolume: boolean | null;
+  categoryMismatches: Item[];
+  needsConfirmation: boolean;
 }
 
 export function roomZoneLoads(data: PackWiseData): RoomZoneLoad[] {
@@ -66,8 +68,13 @@ export function roomZoneLoads(data: PackWiseData): RoomZoneLoad[] {
       .sort((a, b) => a.unpackOrder - b.unpackOrder)
       .map((a) => items.get(a.itemId))
       .filter((item): item is Item => item !== undefined);
-    const usedLiters = round1(sum(placed, (i) => i.volumeLiters));
-    return { zone, items: placed, usedLiters, overVolume: usedLiters > zone.capacityLiters };
+    const usedLiters = sum(placed, (i) => i.volumeLiters);
+    return {
+      zone, items: placed, usedLiters,
+      overVolume: zone.capacityLiters === null ? null : usedLiters > zone.capacityLiters + 1e-9,
+      categoryMismatches: zone.suitableCategories.length ? placed.filter((item) => !zone.suitableCategories.includes(item.category)) : [],
+      needsConfirmation: !zone.confirmed,
+    };
   });
 }
 
